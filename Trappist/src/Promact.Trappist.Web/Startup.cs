@@ -10,6 +10,8 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Promact.Trappist.Repository.Questions;
+using Promact.Trappist.Repository.BasicSetup;
+using Promact.Trappist.Utility.EmailServices;
 using Promact.Trappist.DomainModel.DbContext;
 using Promact.Trappist.Repository.Categories;
 using Promact.Trappist.Repository.Tests;
@@ -52,6 +54,13 @@ namespace Promact.Trappist.Web
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<TrappistDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddMvc();
+            services.AddScoped<IBasicSetupRepository, BasicSetupRepository>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddMvc(config => { config.Filters.Add(typeof(GlobalExceptionFilter)); });
+
+            services.AddScoped<IQuestionsRespository, QuestionsRepository>();
             services.AddMvc(/*config => { config.Filters.Add(typeof(GlobalExceptionFilter)); }*/);
             services.AddScoped<IQuestionRespository, QuestionRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
