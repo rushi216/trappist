@@ -1,6 +1,7 @@
 ﻿using Promact.Trappist.DomainModel.DbContext;
 using System.Linq;
 using Promact.Trappist.DomainModel.Models.Test;
+using System;
 using System.Collections.Generic;
 
 namespace Promact.Trappist.Repository.Tests
@@ -21,7 +22,19 @@ namespace Promact.Trappist.Repository.Tests
         {
             _dbContext.Test.Add(test);
             _dbContext.SaveChangesAsync();
-        }      
+        }
+        /// <summary>
+        ///  this method is used to generate a random string for every test at the time of test creation
+        /// <param name="test">object of Test</param>
+        /// <param name="length">length of the random string</param>
+        /// </summary>
+        private static Random random = new Random();
+        public void RandomLinkString(Test test, int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+           test.Link= new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
         /// <summary>
         /// this method is used to check whether test name is unique or not
         /// </summary>
