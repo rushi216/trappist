@@ -24,7 +24,7 @@ export class HttpService {
     }
 
     post(url: string, body: any) {
-        let jsonBody = JSON.stringify(body);
+        let jsonBody = JSON.stringify(body);        
         let headers = new Headers({ 'Content-Type': 'application/json; charset=utf-8' });
         let options = new RequestOptions({ headers: headers });
 
@@ -42,5 +42,4 @@ export class HttpService {
     delete(url: string) {
         return this.http.delete(url).map(res => res.json());
     }
-
 }

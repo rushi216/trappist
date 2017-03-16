@@ -56,10 +56,13 @@ namespace Promact.Trappist.Web
                 .AddDefaultTokenProviders();
 
             services.AddMvc();
+
             services.AddScoped<IBasicSetupRepository, BasicSetupRepository>();
             services.AddScoped<IEmailService, EmailService>();
-            services.AddMvc(config => { config.Filters.Add(typeof(GlobalExceptionFilter)); });
-
+            // services.AddMvc(config => { config.Filters.Add(typeof(GlobalExceptionFilter)); });
+            services.AddMvc()
+           .AddJsonOptions(o => o.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)
+           .AddJsonOptions(o => o.SerializerSettings.ContractResolver = new DefaultContractResolver());
             services.AddScoped<IQuestionsRespository, QuestionsRepository>();
             services.AddMvc(/*config => { config.Filters.Add(typeof(GlobalExceptionFilter)); }*/);
             services.AddScoped<IQuestionRespository, QuestionRepository>();

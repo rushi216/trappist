@@ -7,6 +7,7 @@ using Promact.Trappist.DomainModel.ApplicationClasses;
 using Promact.Trappist.Utility.EmailServices;
 using Microsoft.Extensions.Configuration;
 using System.IO;
+using Promact.Trappist.DomainModel.ApplicationClasses.BasicSetup;
 
 namespace Promact.Trappist.Repository.BasicSetup
 {
@@ -27,46 +28,65 @@ namespace Promact.Trappist.Repository.BasicSetup
         #endregion
         #region IBasicSetupRepository methods
         //Method for register user
-        public async Task<bool> RegisterUser(DomainModel.ApplicationClasses.BasicSetup.BasicSetup model)
+        public async Task<ServiceResponse> RegisterUser(DomainModel.ApplicationClasses.BasicSetup.BasicSetup model)
         {
+            var response = new ServiceResponse();
             try
             {
                 var user = new ApplicationUser();
-                user.UserName = model.Name;
+                user.Name = model.Name;
+                user.UserName = model.Email;
                 user.Email = model.Email;
+                user.CreateDateTime = DateTime.Now;
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    return true;
+                    response.Response = true;
+                    return response;
                 }
                 else
                 {
-                    return false;
+                    response.Response = false;
+                    return response;
                 }
             }
             catch (Exception ex)
             {
-                throw ex;
+                response.Response = false;
+                return response;
+
             }
         }
 
         //Method for validate conncetion string connection string
-        public async Task<bool> ValidateConnectionString(ConnectionStringParamters model)
+        public async Task<ServiceResponse> ValidateConnectionString(ConnectionStringParamters model)
         {
-            var builder = new SqlConnectionStringBuilder(model.ConnectionString);
-            using (var conn = new SqlConnection(GetConnectionString(builder)))
+            var response = new ServiceResponse();
+            try
             {
-                try
+                model.ConnectionString = model.ConnectionString.Replace("\\\\", "\\");
+                model.ConnectionString = model.ConnectionString.Replace("\"", "");
+                var builder = new SqlConnectionStringBuilder(model.ConnectionString);
+                using (var conn = new SqlConnection(GetConnectionString(builder)))
                 {
-                    conn.Open();
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    return false;
+                    try
+                    {
+                        conn.Open();
+                        response.Response = true;
+                        return response;
+                    }
+                    catch (Exception ex)
+                    {
+                        response.Response = false;
+                        return response;
+                    }
                 }
             }
-
+            catch (Exception ex)
+            {
+                response.Response = false;
+                return response;
+            }
         }
         private string GetConnectionString(SqlConnectionStringBuilder connectionString)
         {

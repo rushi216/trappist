@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Promact.Trappist.DomainModel.ApplicationClasses;
 using Promact.Trappist.DomainModel.ApplicationClasses.BasicSetup;
 using Promact.Trappist.Repository.BasicSetup;
@@ -31,16 +32,10 @@ namespace Promact.Trappist.Core.Controllers
         [HttpPost]
         public async Task<IActionResult> ValidateConnectionString([FromBody] ConnectionStringParamters model)
         {
+
             if (ModelState.IsValid)
             {
-                if (await _basicSetup.ValidateConnectionString(model))
-                {
-                    return Ok();
-                }
-                else
-                {
-                    return BadRequest();
-                }
+                return Ok(await _basicSetup.ValidateConnectionString(model));
             }
             return BadRequest();
         }
@@ -56,9 +51,16 @@ namespace Promact.Trappist.Core.Controllers
         [HttpPost]
         public async Task<IActionResult> ValidateEmailSettings([FromBody] EmailSettings model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                return Ok(await _basicSetup.ValidateEmailSetting(model));
+                if (ModelState.IsValid)
+                {
+                    return Ok(await _basicSetup.ValidateEmailSetting(model));
+                }
+            }
+            catch (Exception ex)
+            {
+
             }
             return BadRequest();
         }
@@ -73,16 +75,16 @@ namespace Promact.Trappist.Core.Controllers
         [HttpPost]
         public async Task<IActionResult> ValidateUser([FromBody] BasicSetup model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                if (await _basicSetup.RegisterUser(model))
+                if (ModelState.IsValid)
                 {
-                    return Ok();
+                    return Ok(await _basicSetup.RegisterUser(model));
                 }
-                else
-                {
-                    return BadRequest();
-                }
+            }
+            catch (Exception ex)
+            {
+                return Ok(false);
             }
             return BadRequest();
         }
