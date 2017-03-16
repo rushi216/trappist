@@ -26,15 +26,14 @@ namespace Promact.Trappist.Core.Controllers
         public ActionResult CreateTest([FromBody] Test test)
         {
             if (_testRepository.UniqueTestName(test)) // verifying the test name is unique or not
-            {
                 _testRepository.CreateTest(test);
-                return _stringConstant.Success;              
-            }
-            else
-            {
-                return _stringConstant.InvalidTestName;
-            }           
+            _testRepository.RandomLinkString(test, 10);
+            _testRepository.CreateTest(test);
+            return Ok();
         }
+            
+         return Ok();
+    }
         /// <summary>
         /// Get All Tests
         /// </summary>

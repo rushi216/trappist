@@ -8,6 +8,7 @@ namespace Promact.Trappist.Repository.Tests
 {
     public class TestsRepository : ITestsRepository
     {
+        private static Random random = new Random();
         private readonly TrappistDbContext _dbContext;
         public TestsRepository(TrappistDbContext dbContext)
         {
@@ -28,11 +29,10 @@ namespace Promact.Trappist.Repository.Tests
         /// <param name="test">object of Test</param>
         /// <param name="length">length of the random string</param>
         /// </summary>
-        private static Random random = new Random();
         public void RandomLinkString(Test test, int length)
         {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-           test.Link= new string(Enumerable.Repeat(chars, length)
+            const string charactersForRandomString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+           test.Link= new string(Enumerable.Repeat(charactersForRandomString, length)
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
         /// <summary>
@@ -45,10 +45,14 @@ namespace Promact.Trappist.Repository.Tests
             var testObj = (from s in _dbContext.Test
                           where s.TestName == test.TestName
                           select s).FirstOrDefault();
-            if (testObj != null)
+            if (testObj != null) {           
                 return false;
+            }
             else
+            {
                 return true;
+            }
+            }               
         }
         /// <summary>
         /// Fetch all the tests from Test Model,Convert it into List
@@ -60,4 +64,3 @@ namespace Promact.Trappist.Repository.Tests
             return tests;
         }
     }
-}
