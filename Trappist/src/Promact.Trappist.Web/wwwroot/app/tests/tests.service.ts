@@ -8,14 +8,11 @@ export class TestService {
     private testsApiUrl = "api/tests";
 
     constructor(private httpService: HttpService) {
-
     }
-
     /**
      * get list of tests
      */
     getTests() {
         return this.httpService.get(this.testsApiUrl);
     }
-
 }

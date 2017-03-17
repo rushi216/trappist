@@ -35,6 +35,7 @@ import { ClipboardModule } from 'ngx-clipboard';
     ],
     providers: [
         TestService,
+        TestsDashboardComponent
         TestSettingService
     ]
 })

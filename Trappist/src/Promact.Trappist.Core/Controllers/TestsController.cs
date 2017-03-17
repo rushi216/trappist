@@ -25,7 +25,8 @@ namespace Promact.Trappist.Core.Controllers
         [HttpPost]
         public ActionResult CreateTest([FromBody] Test test)
         {
-            if (_testRepository.UniqueTestName(test)) // verifying the test name is unique or not
+            if (_testRepository.UniqueTestName(test))// verifying the test name is unique or not
+            {
                 _testRepository.CreateTest(test);
             _testRepository.RandomLinkString(test, 10);
             _testRepository.CreateTest(test);

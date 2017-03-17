@@ -9,7 +9,6 @@ import { Http } from "@angular/http";
 import { TestSettingsComponent } from "../../tests/test-settings/test-settings.component";
 import { TestSettingService } from "../testsetting.service";
 
-
 @Component({
     moduleId: module.id,
     selector: "tests-dashboard",
@@ -17,60 +16,51 @@ import { TestSettingService } from "../testsetting.service";
 })
 
 export class TestsDashboardComponent {
-
-
     Tests: Test[] = new Array<Test>();
     
 
 
     constructor(public dialog: MdDialog, private testService: TestService) {
-
         this.getAllTests();
-
     }
 
     //Get All The Tests From Server
     getAllTests() {
         this.testService.getTests().subscribe((response) => { this.Tests = (response), console.log(this.Tests) });
-
-
     }
-
     // Open Create Test Dialog
-    constructor(public dialog: MdDialog) { }
     createTestDialog() {
         this.dialog.open(TestCreateDialogComponent);
     }
 }
-export class Test
-{
-    TestName: string;
-}
+
+
+
 @Component({
     moduleId: module.id,
     selector: 'test-create-dialog',
     templateUrl: "test-create-dialog.html"
+   
 })
+   
 export class TestCreateDialogComponent {
-    testDashboard: TestsDashboardComponent;
-    test: Test = new Test;
     testCreateResponse: any;
+    test: Test = new Test;
     t_list: TestsDashboardComponent[] = new Array<TestsDashboardComponent>();
-    constructor(public http: Http, private route: ActivatedRoute, public dialog: MdDialog)
-    {
+    constructor(public http: Http, private route: ActivatedRoute, public dialog: MdDialog, public testDashboard: TestsDashboardComponent) {
     }
     /*
     this method is used to add a new test
     parameter passed is name of the test
     */
-    AddTest(testName: string)
-    {
+    AddTest(testName: string) {
         this.test.TestName = testName;
         this.http.post("api/tests", this.test).subscribe((response) => {
             if (response.ok)
                 this.testCreateResponse = (response);
-        }); 
-        this.dialog.closeAll();   
+        });
+        this.dialog.closeAll();
+        this.testDashboard.Tests.push(this.testCreateResponse);
     }
 }
 

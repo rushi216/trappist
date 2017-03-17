@@ -6,9 +6,10 @@
     <div class="dialog-body">
         <div class="form-group">
             <label class="h4">Test Name</label>
-            <input type="text" id="name" name="name" required class="form-control" placeholder="Ex. Software Developer Recruitment Test" [(ngModel)]="test_name" #name="ngModel" pattern="^[a-zA-Z0_9&]*$"/> 
+            <input type="text" id="name" name="name" required class="form-control" placeholder="Ex. Software Developer Recruitment Test" [(ngModel)]="test_name" #name="ngModel" pattern="^[a-zA-Z0_9&]*$" maxlength="150"/> 
             <span class="error-msg" [hidden]="name.valid || name.pristine">Name is required</span>
             <span class="error-msg" [hidden]="name.valid || name.untouched">Enter a valid test name</span>
+            <span class="error-msg" [hidden]="name.valid || name.untouched">Test name length cannot be more than 150</span>
         </div>
     </div>
     <div class="dialog-actions">
