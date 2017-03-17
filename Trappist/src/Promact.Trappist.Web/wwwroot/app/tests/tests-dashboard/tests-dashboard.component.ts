@@ -70,7 +70,7 @@ export class TestCreateDialogComponent {
             if (response.ok)
                 this.testCreateResponse = (response);
         }); 
-        this.dialog.closeAll();       
+        this.dialog.closeAll();   
     }
 }
 

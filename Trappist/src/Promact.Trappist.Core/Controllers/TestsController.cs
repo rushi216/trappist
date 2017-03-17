@@ -15,7 +15,7 @@ namespace Promact.Trappist.Core.Controllers
         public TestsController(ITestsRepository testRepository, IStringConstants stringConstant)
         {
             _testRepository = testRepository;
-          _stringConstant = stringConstant;
+            _stringConstant = stringConstant;
         }    
         /// <summary>
         /// this method is used to add a new test 
