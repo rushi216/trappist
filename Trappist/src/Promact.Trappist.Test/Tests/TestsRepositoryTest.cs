@@ -1,8 +1,10 @@
-﻿using Promact.Trappist.DomainModel.DbContext;
-using Promact.Trappist.Repository.Tests;
-using Microsoft.Extensions.DependencyInjection;
-
+﻿using System;
+using Promact.Trappist.DomainModel.DbContext;
 using Xunit;
+using Microsoft.Extensions.DependencyInjection;
+using Promact.Trappist.Repository.Tests;
+using System.Linq;
+using Promact.Trappist.DomainModel.Models.Test;
 
 namespace Promact.Trappist.Test.Tests
 {
@@ -49,5 +51,22 @@ namespace Promact.Trappist.Test.Tests
             _trappistDbContext.Test.Add(new DomainModel.Models.Test.Test() { TestName = "CU 123" });
             _trappistDbContext.SaveChanges();
         }
+
+        [Fact]
+        public bool UniqueNameTest()
+        {
+            var test = _trappistDbContext.Test.ToList().FirstOrDefault(x => x.TestName == "Fresh");
+            _testRepository.UniqueTestName(test);
+            Assert.True(_trappistDbContext.Test.Count()==0);
+            return true;
+        }
+        [Fact]
+        public void RandomLinkStringTest()
+        {
+            var test = new DomainModel.Models.Test.Test();
+            _testRepository.RandomLinkString(test, 10);
+            Assert.True(_trappistDbContext.Test.Count() == 0);
+        }
+        
     }
 }

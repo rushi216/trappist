@@ -2,6 +2,7 @@
 using Promact.Trappist.DomainModel.Models.Test;
 using Promact.Trappist.Repository.Tests;
 using Promact.Trappist.Utility.Constants;
+using System.Threading.Tasks;
 
 namespace Promact.Trappist.Core.Controllers
 {
@@ -23,18 +24,19 @@ namespace Promact.Trappist.Core.Controllers
         /// <param name="test">object of the Test</param>
         /// <returns>string</returns>
         [HttpPost]
-        public ActionResult CreateTest([FromBody] Test test)
+        public async Task<IActionResult> CreateTest([FromBody] Test test)
         {
-            if (_testRepository.UniqueTestName(test))// verifying the test name is unique or not
+            var res = new Response();
+            res=await _testRepository.UniqueTestName(test);
+            // verifying the test name is unique or not
+            if(res.ResponseValue)
             {
+                _testRepository.RandomLinkString(test, 10);
                 _testRepository.CreateTest(test);
-            _testRepository.RandomLinkString(test, 10);
-            _testRepository.CreateTest(test);
-            return Ok();
+                return Ok(test);                    
+            }
+            return Ok(); 
         }
-            
-         return Ok();
-    }
         /// <summary>
         /// Get All Tests
         /// </summary>
@@ -45,6 +47,5 @@ namespace Promact.Trappist.Core.Controllers
             var tests = _testRepository.GetAllTests();
             return Ok(tests);
         }
-
     }
 }

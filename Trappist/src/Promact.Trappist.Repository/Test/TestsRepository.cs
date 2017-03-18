@@ -2,6 +2,7 @@
 using System.Linq;
 using Promact.Trappist.DomainModel.Models.Test;
 using System;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 
 namespace Promact.Trappist.Repository.Tests
@@ -40,17 +41,19 @@ namespace Promact.Trappist.Repository.Tests
         /// </summary>
         /// <param name="test">object of Test</param>
         /// <returns>boolean</returns>
-        public bool UniqueTestName(Test test)
+        public async Task<Response>UniqueTestName(Test test)
         {
+            Response response = new Response();
+            response.ResponseValue = false;   
             var testObj = (from s in _dbContext.Test
                           where s.TestName == test.TestName
                           select s).FirstOrDefault();
-            if (testObj != null) {           
-                return false;
-            }
+            if (testObj != null) 
+                return response;                         
             else
             {
-                return true;
+                response.ResponseValue = false;
+                return response;
             }
             }               
         }

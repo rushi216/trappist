@@ -1,5 +1,5 @@
-﻿import { NgModule } from '@angular/core';
-import { SharedModule } from '../shared/shared.module';
+﻿import { NgModule } from "@angular/core";
+import { SharedModule } from "../shared/shared.module";
 import { testsRouting } from "./tests.routing";
 import { TestsComponent } from "./tests.component";
 import { TestsDashboardComponent } from "./tests-dashboard/tests-dashboard.component";

@@ -6,14 +6,15 @@
     <div class="dialog-body">
         <div class="form-group">
             <label class="h4">Test Name</label>
-            <input type="text" id="name" name="name" required class="form-control" placeholder="Ex. Software Developer Recruitment Test" [(ngModel)]="test_name" #name="ngModel" pattern="^[a-zA-Z0_9&]*$" maxlength="150"/> 
-            <span class="error-msg" [hidden]="name.valid || name.pristine">Name is required</span>
-            <span class="error-msg" [hidden]="name.valid || name.untouched">Enter a valid test name</span>
-            <span class="error-msg" [hidden]="name.valid || name.untouched">Test name length cannot be more than 150</span>
+            <input type="text" id="name" name="name" required class="form-control" placeholder="Ex. Software Developer Recruitment Test" [(ngModel)]="test_name" #name="ngModel" pattern="^[a-zA-Z0_9_ @_)]*$" maxlength="150" #name="ngControl"/> 
+            <span class="error-msg" [hidden]="name.valid">Name is required</span>
+            <span class="error-msg" [hidden]="name.valid">Enter a valid test name</span>
+            <span class="error-msg" *ngIf="errorMessage">Test Name already exist</span>
+
         </div>
     </div>
     <div class="dialog-actions">
         <button type="button" class="btn" md-dialog-close>Cancel</button>
         <button type="submit" class="btn btn-primary" (click)="AddTest(test_name)">Create Test</button>
     </div>
-</div>
+</div> 

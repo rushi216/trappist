@@ -16,7 +16,7 @@ namespace Promact.Trappist.Repository.Tests
         /// </summary>
         /// <param name="test">object of Test</param>
         /// <returns>boolean</returns>
-        bool UniqueTestName(Test test);
+        Task<Response>UniqueTestName(Test test);
         /// <summary>
         /// this method is used to generate a random string which is unique for every test
         /// </summary>

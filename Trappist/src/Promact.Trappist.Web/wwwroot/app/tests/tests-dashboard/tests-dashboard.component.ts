@@ -8,6 +8,7 @@ import { ActivatedRoute, Router, provideRoutes } from '@angular/router';
 import { Http } from "@angular/http";
 import { TestSettingsComponent } from "../../tests/test-settings/test-settings.component";
 import { TestSettingService } from "../testsetting.service";
+import { Response } from "../tests.model";
 
 @Component({
     moduleId: module.id,
@@ -24,11 +25,11 @@ export class TestsDashboardComponent {
         this.getAllTests();
     }
 
-    //Get All The Tests From Server
+    // get All The Tests From Server
     getAllTests() {
         this.testService.getTests().subscribe((response) => { this.Tests = (response), console.log(this.Tests) });
     }
-    // Open Create Test Dialog
+    // open Create Test Dialog
     createTestDialog() {
         this.dialog.open(TestCreateDialogComponent);
     }
@@ -40,24 +41,31 @@ export class TestsDashboardComponent {
     moduleId: module.id,
     selector: 'test-create-dialog',
     templateUrl: "test-create-dialog.html"
-   
 })
-   
+
 export class TestCreateDialogComponent {
+    private errorMessage: boolean;
     testCreateResponse: any;
+    teststring: string;
     test: Test = new Test;
     t_list: TestsDashboardComponent[] = new Array<TestsDashboardComponent>();
-    constructor(public http: Http, private route: ActivatedRoute, public dialog: MdDialog, public testDashboard: TestsDashboardComponent) {
+    constructor(private route: ActivatedRoute, public dialog: MdDialog, public testDashboard: TestsDashboardComponent, private testService: TestService) {
     }
-    /*
+    /**
     this method is used to add a new test
     parameter passed is name of the test
-    */
-    AddTest(testName: string) {
-        this.test.TestName = testName;
-        this.http.post("api/tests", this.test).subscribe((response) => {
-            if (response.ok)
-                this.testCreateResponse = (response);
+    **/
+    AddTest(testNameRef: string) {
+        this.test.testName = testNameRef;
+
+        this.testService.addTests("api/tests", this.test).subscribe((response: Response) => {
+            if (response.responseValue == true)
+            {
+                this.testCreateResponse = (response)
+                this.errorMessage = false;
+            }
+            else           
+                this.errorMessage = true;                     
         });
         this.dialog.closeAll();
         this.testDashboard.Tests.push(this.testCreateResponse);
