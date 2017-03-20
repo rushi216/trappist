@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "AutoMapper": "6.0.0",
     "Microsoft.AspNetCore.Mvc.Core": "1.0.1",
     "NETStandard.Library": "1.6.0",
     "Promact.Trappist.DomainModel": "1.0.0-*",
