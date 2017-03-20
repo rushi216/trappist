@@ -1,5 +1,9 @@
 ﻿import { Component, OnInit, ViewChild } from "@angular/core";
 import { MdDialog } from '@angular/material';
+import { TestCreateDialogComponent } from "./test-create-dialog.component";
+import { DeleteTestDialogComponent } from "./delete-test-dialog.component";
+import { TestService } from "../tests.service";
+import { Test } from "../tests.model";
 
 @Component({
     moduleId: module.id,
@@ -7,19 +11,32 @@ import { MdDialog } from '@angular/material';
     templateUrl: "tests-dashboard.html"
 })
 
-export class TestsDashboardComponent{
+export class TestsDashboardComponent {
+
+
+    Tests: Test[] = new Array<Test>();
+
+
+    constructor(public dialog: MdDialog, private testService: TestService) {
+
+        this.getAllTests();
+
+    }
+
+    //Get All The Tests From Server
+    getAllTests() {
+        this.testService.getTests().subscribe((response) => { this.Tests = (response), console.log(this.Tests) });
+
+
+    }
 
     // Open Create Test Dialog
-    constructor(public dialog: MdDialog) { }
-
     createTestDialog() {
         this.dialog.open(TestCreateDialogComponent);
     }
-}
 
-@Component({
-    moduleId: module.id,
-    selector: 'test-create-dialog',
-    templateUrl: "test-create-dialog.html"
-})
-export class TestCreateDialogComponent { }
+    // Open Delete Test Dialog
+    deleteTestDialog() {
+      this.dialog.open(DeleteTestDialogComponent);
+    }
+}

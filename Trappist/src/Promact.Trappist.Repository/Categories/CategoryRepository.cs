@@ -3,7 +3,6 @@ using Promact.Trappist.DomainModel.Models.Category;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
 namespace Promact.Trappist.Repository.Categories
 {
     public class CategoryRepository : ICategoryRepository
@@ -18,10 +17,11 @@ namespace Promact.Trappist.Repository.Categories
         /// Get all the names of Categories
         /// </summary>
         /// <returns>Categories list</returns>
-        public IEnumerable<string> GetAllCategories()
+        public IEnumerable<Category> GetAllCategories()
         {
-            var category = _dbContext.Category.Select(x => x.CategoryName).ToList();
-            return (category);
+            var category = _dbContext.Category.ToList();
+            var categoryOrderedByCreatedDateTime = category.OrderBy(g => g.CreatedDateTime).ToList();
+            return categoryOrderedByCreatedDateTime;
         }
         #region Adding a CategoryName
         /// <summary>
@@ -34,7 +34,6 @@ namespace Promact.Trappist.Repository.Categories
             _dbContext.SaveChanges();
         }
         #endregion
-
         #region Finding a Id Respective Category
         /// <summary>
         /// Find a Respective Id from Catagory Table
@@ -46,7 +45,6 @@ namespace Promact.Trappist.Repository.Categories
             return _dbContext.Category.FirstOrDefault(Check => Check.Id == key);
         }
         #endregion
-
         #region Edit A Category Name
         // <summary>
         // Edit a Category from Category Table
