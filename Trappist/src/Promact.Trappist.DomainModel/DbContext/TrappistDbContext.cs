@@ -7,16 +7,34 @@ using Promact.Trappist.DomainModel.Models;
 using Promact.Trappist.DomainModel.Models.Category;
 using System;
 using Promact.Trappist.DomainModel.Models.Test;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
+using Newtonsoft.Json;
+using Promact.Trappist.DomainModel.ApplicationClasses.BasicSetup;
+using Promact.Trappist.Utility.Constants;
 
 namespace Promact.Trappist.DomainModel.DbContext
 {
     public class TrappistDbContext : IdentityDbContext<ApplicationUser>
     {
-        public TrappistDbContext(DbContextOptions<TrappistDbContext> options)
-            : base(options)
-        {
-        }
+        #region Private variables
+        #region Dependencies
+        private readonly IHostingEnvironment _environment;
+        private readonly IStringConstants _stringConstants;
+        #endregion
+        #endregion
 
+        #region Constructors
+        public TrappistDbContext(DbContextOptions<TrappistDbContext> options, IHostingEnvironment environment, IStringConstants stringConstants)
+             : base(options)
+        {
+            _environment = environment;
+            _stringConstants = stringConstants;
+        }
+        public TrappistDbContext() { }
+        #endregion
+
+        #region Protected Methods
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -25,6 +43,21 @@ namespace Promact.Trappist.DomainModel.DbContext
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
         }
+
+        //Method used for providing dynamic connection string from user at runtime
+        protected override void OnConfiguring(DbContextOptionsBuilder optionBuilder)
+        {
+            string path = Path.Combine(_environment.ContentRootPath.ToString(), _stringConstants.ConfigFolderName, _stringConstants.SetupConfigFileName);
+            if (File.Exists(path))
+            {
+                var reader = File.ReadAllText(path);
+                var connectionString = JsonConvert.DeserializeObject<SetupConfig>(reader);
+                optionBuilder.UseSqlServer(connectionString.ConnectionStringParameters.ConnectionString);
+                base.OnConfiguring(optionBuilder);
+            }
+        }
+        #endregion
+
         public DbSet<Test> Test { get; set; }
         public DbSet<Category> Category { get; set; }
         public DbSet<SingleMultipleAnswerQuestion> SingleMultipleAnswerQuestion { get; set; }
@@ -50,3 +83,4 @@ namespace Promact.Trappist.DomainModel.DbContext
         #endregion
     }
 }
+

@@ -4,13 +4,27 @@ namespace Promact.Trappist.Utility.Constants
 {
     public class StringConstants : IStringConstants
     {
-     
+        public string ConfigFolderName
+        {
+            get
+            {
+                return "Config";
+            }
+        }
 
         public string InvalidTestName
         {
             get
             {
                 return "Invalid Test Name "; 
+            }
+        }
+
+        public string SetupConfigFileName
+        {
+            get
+            {
+                return "SetupConfig.json";
             }
         }
 

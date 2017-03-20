@@ -1,6 +1,6 @@
-﻿namespace Promact.Trappist.DomainModel.ApplicationClasses
+﻿namespace Promact.Trappist.DomainModel.ApplicationClasses.BasicSetup
 {
-    public class ConnectionStringParamters
+    public class ConnectionStringParameters
     {
         public string ConnectionString { get; set; }
         public string Server { get; set; }

@@ -2,12 +2,9 @@
 import { HttpService } from "../core/http.service";
 
 @Injectable()
-
 export class SetupService {
 
-
     constructor(private httpService: HttpService) {
-
     }
 
     /**
@@ -23,6 +20,7 @@ export class SetupService {
     validateEmailSettings(url: string, model: any) {
         return this.httpService.post(url, model);
     }
+
     /**
      Create User
     **/

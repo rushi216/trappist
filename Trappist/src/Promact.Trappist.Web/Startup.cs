@@ -9,7 +9,6 @@ using Promact.Trappist.Web.Models;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Http;
 using System.IO;
-using Promact.Trappist.Repository.Questions;
 using Promact.Trappist.Repository.BasicSetup;
 using Promact.Trappist.Utility.EmailServices;
 using Promact.Trappist.DomainModel.DbContext;
@@ -49,16 +48,18 @@ namespace Promact.Trappist.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<TrappistDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), x => x.MigrationsAssembly("Promact.Trappist.Web")));
+            // Add framework services.
+            services.AddApplicationInsightsTelemetry(Configuration);
+            services.AddDbContext<TrappistDbContext>();
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<TrappistDbContext>()
                 .AddDefaultTokenProviders();
 
             services.AddMvc();
-
             services.AddScoped<IBasicSetupRepository, BasicSetupRepository>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IStringConstants, StringConstants>();
+            services.AddDirectoryBrowser();
             // services.AddMvc(config => { config.Filters.Add(typeof(GlobalExceptionFilter)); });
             services.AddMvc()
            .AddJsonOptions(o => o.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)
@@ -111,6 +112,7 @@ namespace Promact.Trappist.Web
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
             app.UseMvc(routes =>
             {
+
                 routes.MapRoute(
                     name: "setup",
                     template: "setup",

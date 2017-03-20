@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Promact.Trappist.DomainModel.ApplicationClasses;
 using Promact.Trappist.DomainModel.ApplicationClasses.BasicSetup;
 using Promact.Trappist.Repository.BasicSetup;
 using System;
@@ -16,28 +14,29 @@ namespace Promact.Trappist.Core.Controllers
         private readonly IBasicSetupRepository _basicSetup;
         #endregion
         #endregion
+
         #region Constructor
         public BasicSetupController(IBasicSetupRepository basicSetup)
         {
             _basicSetup = basicSetup;
         }
         #endregion
+
         #region Public methods
         /// <summary>
         /// This method validate connection string
         /// </summary>
         /// <param name="model"></param>
-        /// <returns>If valid than true else error message</returns>
-        [Route("connection")]
+        /// <returns>If valid than true else false</returns>
+        [Route("ConnectionString")]
         [HttpPost]
-        public async Task<IActionResult> ValidateConnectionString([FromBody] ConnectionStringParamters model)
+        public IActionResult ValidateConnectionString([FromBody] BasicSetup model)
         {
-
             if (ModelState.IsValid)
             {
-                return Ok(await _basicSetup.ValidateConnectionString(model));
+                return Ok(_basicSetup.ValidateConnectionString(model));
             }
-            return BadRequest();
+            return Ok(false);
         }
 
         /// <summary>
@@ -45,70 +44,40 @@ namespace Promact.Trappist.Core.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns>if valid email settings than return true
-        ///          else Error Message
+        ///          else false
         /// </returns>
-        [Route("mail")]
+        [Route("MailSettings")]
         [HttpPost]
-        public async Task<IActionResult> ValidateEmailSettings([FromBody] EmailSettings model)
+        public  IActionResult ValidateEmailSettings([FromBody] BasicSetup model)
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                var response = new EmailResponse();
+                if (_basicSetup.ValidateEmailSetting(model))
                 {
-                    return Ok(await _basicSetup.ValidateEmailSetting(model));
+                    response.IsMailSent = true;
+                    return Ok(response);
                 }
+                response.IsMailSent = false;
+                return Ok(response);
             }
-            catch (Exception ex)
-            {
-
-            }
-            return BadRequest();
+            return Ok(false);
         }
 
         /// <summary>
-        /// This method will create user
+        /// This method will create user if valid user credential
         /// </summary>
         /// <param name="model"></param>
-        /// <returns>if user created than return true else error message</returns>
-        //Post: /api/BasicSetup
-        [Route("validateuser")]
+        /// <returns>if user created than return true else false</returns>
+        [Route("Validateuser")]
         [HttpPost]
         public async Task<IActionResult> ValidateUser([FromBody] BasicSetup model)
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
-                {
-                    return Ok(await _basicSetup.RegisterUser(model));
-                }
+                return Ok(await _basicSetup.RegisterUser(model));
             }
-            catch (Exception ex)
-            {
-                return Ok(false);
-            }
-            return BadRequest();
-        }
-
-        /// <summary>
-        /// This method will store parameter
-        /// </summary>
-        /// <returns>It return true if it store connection string and email settings  parameters in json file</returns>
-        //[Route("json")]
-        // [HttpGet]
-        public async Task<IActionResult> SaveSetupParameter()
-        {
-            try
-            {
-                if (await _basicSetup.SaveSetupParameter())
-                {
-                    return Ok();
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            return BadRequest();
+            return Ok(false);
         }
         #endregion
     }

@@ -7,8 +7,8 @@ namespace Promact.Trappist.Repository.BasicSetup
     public interface IBasicSetupRepository
     {
         Task<ServiceResponse> RegisterUser(DomainModel.ApplicationClasses.BasicSetup.BasicSetup model);
-        Task<ServiceResponse> ValidateConnectionString(ConnectionStringParamters model);
-        Task<EmailResponse> ValidateEmailSetting(EmailSettings model);
-        Task<bool> SaveSetupParameter();
+        ServiceResponse ValidateConnectionString(DomainModel.ApplicationClasses.BasicSetup.BasicSetup model);
+        bool ValidateEmailSetting(DomainModel.ApplicationClasses.BasicSetup.BasicSetup model);
+        bool FileExist();
     }
 }

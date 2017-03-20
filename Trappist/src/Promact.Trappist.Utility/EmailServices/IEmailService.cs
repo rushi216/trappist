@@ -1,10 +1,7 @@
-﻿using Promact.Trappist.DomainModel.ApplicationClasses;
-using System.Threading.Tasks;
-
-namespace Promact.Trappist.Utility.EmailServices
+﻿namespace Promact.Trappist.Utility.EmailServices
 {
     public interface IEmailService
     {
-        Task<EmailResponse> SendMail(EmailSettings email);
+        bool SendMail(string userName,string password,string server,int port,string body,string to);
     }
 }

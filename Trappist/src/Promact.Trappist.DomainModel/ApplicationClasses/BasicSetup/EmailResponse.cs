@@ -1,4 +1,4 @@
-﻿namespace Promact.Trappist.DomainModel.ApplicationClasses
+﻿namespace Promact.Trappist.DomainModel.ApplicationClasses.BasicSetup
 {
     public class EmailResponse
     {

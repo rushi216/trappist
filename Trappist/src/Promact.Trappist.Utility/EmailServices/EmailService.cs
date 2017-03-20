@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
-using Promact.Trappist.DomainModel.ApplicationClasses;
 using MimeKit;
 using MailKit.Net.Smtp;
 using MailKit.Security;
@@ -10,30 +8,26 @@ namespace Promact.Trappist.Utility.EmailServices
     public class EmailService : IEmailService
     {
         #region IEmailService Method
-        //Method used for sending mail
-        public async Task<EmailResponse> SendMail(EmailSettings email)
-        {
-            var response = new EmailResponse();
+        //Method used for sending mail to client
+        public bool SendMail(string userName, string password, string server, int port, string body, string to)
+        {          
             try
             {
                 MimeMessage emailMessage = new MimeMessage();
-                emailMessage.From.Add(new MailboxAddress(email.UserName));
-                emailMessage.To.Add(new MailboxAddress("hardik.patel@promactinfo.com"));
-                using(var client=new SmtpClient())
+                emailMessage.From.Add(new MailboxAddress(userName));
+                emailMessage.To.Add(new MailboxAddress(to));
+                using (var client = new SmtpClient())
                 {
-                    client.Connect(email.Server, email.Port, SecureSocketOptions.None);
-                    await client.AuthenticateAsync(email.UserName, email.Password);
+                    client.Connect(server, port, SecureSocketOptions.None);
+                    client.AuthenticateAsync(userName, password);
                     client.Send(emailMessage);
                     client.Disconnect(true);
                 }
-                response.IsMailSent = true;
-                return response;
+                return true;
             }
-            catch(Exception ex)
-            {
-                response.IsMailSent = false;
-                response.ErrorMessage = ex.ToString();
-                return response;
+            catch (Exception)
+            {                              
+                return false;               
             }
         }
         #endregion

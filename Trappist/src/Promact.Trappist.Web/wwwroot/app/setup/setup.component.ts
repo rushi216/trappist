@@ -1,11 +1,11 @@
 ﻿import { Component } from '@angular/core';
-import { ConnectionStringParameter } from "./setup.model";
+import { ConnectionStringParamters } from "./setup.model";
 import { SetupService } from "./setup.service";
-import { Http } from "@angular/http";
 import { ServiceResponse } from "./setup.model";
 import { EmailResponse } from "./setup.model";
 import { EmailSettings } from "./setup.model";
 import { BasicSetup } from "./setup.model";
+import { RegistrationFields } from "./setup.model";
 @Component({
   moduleId: module.id,
   selector: 'setup',
@@ -13,19 +13,24 @@ import { BasicSetup } from "./setup.model";
 })
 
 export class SetupComponent {
-
-    private connectionString: ConnectionStringParameter = new ConnectionStringParameter();
+    private connectionString: ConnectionStringParamters = new ConnectionStringParamters();
     private errorMessage: boolean;
     private isValid: boolean;
+    private isValidSecondStep: boolean;
+    private isValidThirdStep: boolean;
     private emailSettings: EmailSettings = new EmailSettings();
     private basicSetup: BasicSetup = new BasicSetup();
+    private confirmPasswordValid: boolean;
     constructor(private setupService: SetupService) {
     }
-
+    /**
+    Method for validate connection string
+    **/
     validateConnectionString(connectionStringName: string) {
-        this.connectionString.ConnectionString = connectionStringName;
-        this.setupService.validateConnectionString('api/BasicSetup/connection', this.connectionString).subscribe((response: ServiceResponse) => {
-            if (response.Response == true) {
+        this.basicSetup.connectionStringParameters = new ConnectionStringParamters();
+        this.basicSetup.connectionStringParameters.connectionString = connectionStringName;
+        this.setupService.validateConnectionString('api/BasicSetup/ConnectionString', this.basicSetup).subscribe((tempResponse: ServiceResponse) => {
+            if (tempResponse.response == true) {
                 this.isValid = true;
                 this.errorMessage = false;
             }
@@ -35,34 +40,53 @@ export class SetupComponent {
             }
         });
     }
+    /**
+    Method for validate email Settings
+    **/
     validateEmailSettings(server: string, port: number, username: string, password: string) {
-        this.emailSettings.Server = server;
-        this.emailSettings.Port = port;
-        this.emailSettings.UserName = username;
-        this.emailSettings.Password = password;
-        this.setupService.validateEmailSettings('api/BasicSetup/mail', this.emailSettings).subscribe((response: EmailResponse) => {
-            if (response.IsMailSent == true) {
-                this.isValid = true;
+        this.basicSetup.emailSettings = new EmailSettings();
+        this.basicSetup.emailSettings.server = server;
+        this.basicSetup.emailSettings.port = port;
+        this.basicSetup.emailSettings.userName = username;
+        this.basicSetup.emailSettings.password = password;
+        this.setupService.validateEmailSettings('api/BasicSetup/MailSettings', this.basicSetup).subscribe((response: EmailResponse) => {
+            if (response.isMailSent == true) {
+                this.isValidSecondStep = true;
                 this.errorMessage = false;
             }
             else {
-                this.isValid = false;
+                this.isValidSecondStep = true;
                 this.errorMessage = true;
             }
         });
     }
+    /**
+    Method for validate Password and Confirm Password matched or not.
+    **/
+    isValidPassword(password: string, confirmPassword: string) {
+        if (confirmPassword == password) {
+            this.confirmPasswordValid = true;
+        }
+        else {
+            this.confirmPasswordValid = false;
+        }
+    }
+    /**
+    Method for Creating user
+    **/
     createUser(name: string, email: string, password: string, confirmPassword: string) {
-        this.basicSetup.Name = name;
-        this.basicSetup.Email = email;
-        this.basicSetup.Password = password;
-        this.basicSetup.ConfirmPassword = confirmPassword;
-        this.setupService.createUser('api/BasicSetup/validateuser', this.basicSetup).subscribe((response: ServiceResponse) => {
-            if (response.Response == true) {
-                this.isValid = true;
+        this.basicSetup.registrationFields = new RegistrationFields();
+        this.basicSetup.registrationFields.name = name;
+        this.basicSetup.registrationFields.email = email;
+        this.basicSetup.registrationFields.password = password;
+        this.basicSetup.registrationFields.confirmPassword = confirmPassword;
+        this.setupService.createUser('api/BasicSetup/Validateuser', this.basicSetup).subscribe((tempResponse: ServiceResponse) => {
+            if (tempResponse.response == true) {
+                this.isValidThirdStep = true;
                 this.errorMessage = false;
             }
             else {
-                this.isValid = false;
+                this.isValidThirdStep = false;
                 this.errorMessage = true;
             }
         });

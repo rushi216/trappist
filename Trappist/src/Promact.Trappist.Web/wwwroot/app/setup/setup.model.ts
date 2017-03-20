@@ -1,25 +1,30 @@
-﻿export class ConnectionStringParameter {
-    ConnectionString: string;
+﻿export class ConnectionStringParamters {
+    connectionString: string;
 }
 
 export class ServiceResponse {
-    Response: boolean;
+    response: boolean;
 }
 
 export class EmailSettings {
-    Server: string;
-    Port: number;
-    UserName: string;
-    Password: string;
+    server: string;
+    port: number;
+    userName: string;
+    password: string;
 }
 
 export class EmailResponse {
-    IsMailSent: boolean;
+    isMailSent: boolean;
 }
 
-export class BasicSetup {
-    Name: string;
-    Email: string;
-    Password: string;
-    ConfirmPassword: string;
+export class RegistrationFields {
+    name: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+}
+export class BasicSetup {    
+    connectionStringParameters: ConnectionStringParamters;
+    registrationFields: RegistrationFields;
+    emailSettings: EmailSettings;
 }
