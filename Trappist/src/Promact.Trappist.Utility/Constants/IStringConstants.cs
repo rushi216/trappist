@@ -19,6 +19,10 @@ namespace Promact.Trappist.Utility.Constants
         /// property InavalidLoginError is used when model state and model binding are not proper
         /// </summary>
         string InavalidModelError { get;  }
+        /// <summary>
+        /// property InvalidEmailError is used when emailid does not match with databse id
+        /// </summary>
+        string InvalidEmailError { get; }
         #endregion
     }
 }

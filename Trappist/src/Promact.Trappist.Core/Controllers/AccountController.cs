@@ -101,6 +101,7 @@ namespace Promact.Trappist.Core.Controllers
                 var user = await _userManager.FindByEmailAsync(forgotPasswordModel.Email);
                 if (user == null)
                 {
+                    ViewBag.Error = _stringConstant.InvalidEmailError;
                     return View("ForgotPassword");
                 }
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
