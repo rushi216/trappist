@@ -6,6 +6,7 @@ import { Test } from "./tests.model";
 export class TestService {
 
     private testsApiUrl = "api/TestDashboard";
+    private testApiUrl = "api/tests";
     test: Test = new Test();
     private testApiUrl = "api/tests";
 
@@ -24,5 +25,9 @@ export class TestService {
      */
     addTests(url: string, test: any) {
         return this.httpService.post(url,test);
+    }
+
+    getTest(testName:any) {
+        return this.httpService.get(this.testApiUrl+"?testName=" +testName);
     }
 }

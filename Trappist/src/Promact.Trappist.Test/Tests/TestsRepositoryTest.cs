@@ -30,7 +30,7 @@ namespace Promact.Trappist.Test.Tests
         [Fact]
         public void GetAllTest()
         {
-            AddTest();
+            AddTests();
             var list = _testRepository.GetAllTests();
             Assert.NotNull(list);
             Assert.Equal(3, list.Count);
@@ -44,29 +44,58 @@ namespace Promact.Trappist.Test.Tests
             var list = _testRepository.GetAllTests();
             Assert.Equal(0, list.Count);
         }
-        private void AddTest()
+        private void AddTests()
         {
             _trappistDbContext.Test.Add(new DomainModel.Models.Test.Test() { TestName = "BBIT 123" });
             _trappistDbContext.Test.Add(new DomainModel.Models.Test.Test() { TestName = "MCKV 123" });
             _trappistDbContext.Test.Add(new DomainModel.Models.Test.Test() { TestName = "CU 123" });
             _trappistDbContext.SaveChanges();
         }
+        [Fact]
+        private void AddTest()
+        {
+            var test = CreateTest();
+            _testRepository.CreateTest(test);
+            Assert.True(_trappistDbContext.Test.Count() == 1);          
+        }
 
         [Fact]
-        public bool UniqueNameTest()
+        public void UniqueNameTest()
         {
-            var test = _trappistDbContext.Test.ToList().FirstOrDefault(x => x.TestName == "Fresh");
-            _testRepository.UniqueTestName(test);
-            Assert.True(_trappistDbContext.Test.Count()==0);
-            return true;
+            var test = CreateTest();
+            _testRepository.CreateTest(test);
+            var name = "abc";
+            Response response = new Response();
+            _testRepository.UniqueTestName(name);
+            _testRepository.CreateTest(test);
+            Assert.True(_trappistDbContext.Test.Count() == 2);
+        }
+        [Fact]
+        public void IsNotUniqueNameTest()
+        {
+            var test = CreateTest();
+            _testRepository.CreateTest(test);
+            Response response = new Response();
+            var name = "test name";
+            _testRepository.UniqueTestName(name);
+            _testRepository.CreateTest(test);
+            Assert.True(_trappistDbContext.Test.Count() == 1);
         }
         [Fact]
         public void RandomLinkStringTest()
         {
-            var test = new DomainModel.Models.Test.Test();
+            var test = CreateTest();
+            _testRepository.CreateTest(test);
             _testRepository.RandomLinkString(test, 10);
-            Assert.True(_trappistDbContext.Test.Count() == 0);
+            Assert.True(_trappistDbContext.Test.Count() == 1);
         }
-        
+        private DomainModel.Models.Test.Test CreateTest()
+        {
+            var test = new DomainModel.Models.Test.Test
+            {
+                TestName = "test name",
+            };
+            return test;
+        }
     }
 }

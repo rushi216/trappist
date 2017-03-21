@@ -23,7 +23,7 @@ namespace Promact.Trappist.Repository.Tests
         public void CreateTest(Test test)
         {
             _dbContext.Test.Add(test);
-            _dbContext.SaveChangesAsync();
+            _dbContext.SaveChanges();
         }
         /// <summary>
         ///  this method is used to generate a random string for every test at the time of test creation
@@ -41,18 +41,19 @@ namespace Promact.Trappist.Repository.Tests
         /// </summary>
         /// <param name="test">object of Test</param>
         /// <returns>boolean</returns>
-        public async Task<Response>UniqueTestName(Test test)
+        public async Task<Response> UniqueTestName(string testName)
         {
             Response response = new Response();
-            response.ResponseValue = false;   
-            var testObj = (from s in _dbContext.Test
-                          where s.TestName == test.TestName
-                          select s).FirstOrDefault();
-            if (testObj != null) 
+            response.ResponseValue = false;
+            //var testnameCheck=_dbContext.Test.FirstOrDefault<x=> x.TestName == testName > ();  
+            var testNameCheck = (from s in _dbContext.Test
+                                 where s.TestName == testName
+                                 select s.TestName).FirstOrDefault();
+            if (testNameCheck != null) 
                 return response;                         
             else
             {
-                response.ResponseValue = false;
+                response.ResponseValue = true;
                 return response;
             }
             }               

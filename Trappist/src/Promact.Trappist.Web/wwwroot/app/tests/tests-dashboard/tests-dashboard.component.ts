@@ -9,6 +9,7 @@ import { Http } from "@angular/http";
 import { TestSettingsComponent } from "../../tests/test-settings/test-settings.component";
 import { TestSettingService } from "../testsetting.service";
 import { Response } from "../tests.model";
+import { Http } from "@angular/http";
 
 @Component({
     moduleId: module.id,
@@ -24,19 +25,16 @@ export class TestsDashboardComponent {
     constructor(public dialog: MdDialog, private testService: TestService) {
         this.getAllTests();
     }
-
     // get All The Tests From Server
     getAllTests() {
         this.testService.getTests().subscribe((response) => { this.Tests = (response), console.log(this.Tests) });
     }
     // open Create Test Dialog
-    createTestDialog() {
-        this.dialog.open(TestCreateDialogComponent);
+    createTestDialog() {       
+            this.dialog.open(TestCreateDialogComponent);
     }
-}
-
-
-
+} 
+     
 @Component({
     moduleId: module.id,
     selector: 'test-create-dialog',
@@ -44,10 +42,12 @@ export class TestsDashboardComponent {
 })
 
 export class TestCreateDialogComponent {
+    test_name: string;  
     private errorMessage: boolean;
     testCreateResponse: any;
     teststring: string;
-    test: Test = new Test;
+    test: Test = new Test();
+    res: Response = new Response;
     t_list: TestsDashboardComponent[] = new Array<TestsDashboardComponent>();
     constructor(private route: ActivatedRoute, public dialog: MdDialog, public testDashboard: TestsDashboardComponent, private testService: TestService) {
     }
@@ -57,18 +57,21 @@ export class TestCreateDialogComponent {
     **/
     AddTest(testNameRef: string) {
         this.test.testName = testNameRef;
-
-        this.testService.addTests("api/tests", this.test).subscribe((response: Response) => {
-            if (response.responseValue == true)
-            {
-                this.testCreateResponse = (response)
+        this.testService.getTest(this.test.testName).subscribe((response) => {
+            this.res = (response);
+            console.log(response);
+            if (this.res.responseValue) {
                 this.errorMessage = false;
+                this.testService.addTests("api/addTests", this.test).subscribe((responses) => {
+                    this.testCreateResponse = (responses)
+                    this.testDashboard.Tests.push(this.testCreateResponse);
+                    this.test = new Test();
+                    this.dialog.closeAll();
+                });
             }
-            else           
-                this.errorMessage = true;                     
-        });
-        this.dialog.closeAll();
-        this.testDashboard.Tests.push(this.testCreateResponse);
+            else 
+                this.errorMessage = true;            
+        });             
     }
 }
 

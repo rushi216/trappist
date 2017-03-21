@@ -7,6 +7,7 @@ namespace Promact.Trappist.DomainModel.Models.Test
     {
         [Required] 
         [MaxLength(150, ErrorMessage = "Test Name length Should be less than 150")] 
+    
         public string TestName { get; set; }
         public string Link { get; set; }
         public int BrowserTolerance { get; set; }

@@ -17,25 +17,39 @@ namespace Promact.Trappist.Core.Controllers
         {
             _testRepository = testRepository;
             _stringConstant = stringConstant;
-        }    
+        } 
+        /// <summary>
+        /// this method is to verify unique name of a test
+        /// </summary>
+        /// <param name="test"></param>
+        /// <returns>boolean</returns>
+        [HttpGet("{testName}")]   
+        public async Task<Response> IsUniqueTestName([FromRoute] string testName)
+        {
+            Response response = new Response();
+            // verifying the test name is unique or not
+            response = await _testRepository.UniqueTestName(testName);
+            if (response.ResponseValue)
+            {
+                return (response);
+            }
+            else
+            {
+                response.ResponseValue = false;
+                return (response);
+            }
+        }
         /// <summary>
         /// this method is used to add a new test 
         /// </summary>
         /// <param name="test">object of the Test</param>
         /// <returns>string</returns>
-        [HttpPost]
-        public async Task<IActionResult> CreateTest([FromBody] Test test)
-        {
-            var res = new Response();
-            res=await _testRepository.UniqueTestName(test);
-            // verifying the test name is unique or not
-            if(res.ResponseValue)
-            {
+        [HttpPost("api/addTests")]
+        public ActionResult CreateTest([FromBody] Test test)
+        {                                                
                 _testRepository.RandomLinkString(test, 10);
                 _testRepository.CreateTest(test);
-                return Ok(test);                    
-            }
-            return Ok(); 
+                return Json(test);                                                         
         }
         /// <summary>
         /// Get All Tests
