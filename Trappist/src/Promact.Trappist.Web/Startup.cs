@@ -39,7 +39,6 @@ namespace Promact.Trappist.Web
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddJsonFile($"setup.json", optional: false, reloadOnChange: true);
 
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
             if (env.IsDevelopment())
             {
                 // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
