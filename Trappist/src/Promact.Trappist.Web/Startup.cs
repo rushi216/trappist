@@ -18,13 +18,14 @@ using Promact.Trappist.Repository.TestSettings;
 using Promact.Trappist.DomainModel.Seed;
 using NLog.Extensions.Logging;
 using NLog.Web;
-using Promact.Trappist.Repository.Account;
 using Promact.Trappist.Repository.TestDashBoard;
 using AutoMapper;
 using Promact.Trappist.DomainModel.ApplicationClasses.Question;
 using Promact.Trappist.DomainModel.Models.Question;
 using Promact.Trappist.DomainModel.ApplicationClasses.SingleMultipleAnswerQuestionApplicationClass;
 using Promact.Trappist.Utility.EmailServices;
+using Promact.Trappist.DomainModel.ApplicationClasses;
+using Microsoft.Extensions.Options;
 
 namespace Promact.Trappist.Web
 {
@@ -35,6 +36,9 @@ namespace Promact.Trappist.Web
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddJsonFile($"setup.json", optional: false, reloadOnChange: true);
+
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
             if (env.IsDevelopment())
             {
@@ -57,19 +61,22 @@ namespace Promact.Trappist.Web
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<TrappistDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
+            services.AddScoped(cfg => cfg.GetService<IOptionsSnapshot<EmailSettings>>().Value);
+
             services.AddMvc(/*config => { config.Filters.Add(typeof(GlobalExceptionFilter)); }*/);
             services.AddScoped<IQuestionRespository, QuestionRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ITestsRepository, TestsRepository>();
             services.AddScoped<IStringConstants, StringConstants>();
             services.AddScoped<ITestSettingsRepository, TestSettingsRepository>();
-            services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<ITestDashBoardRepository, TestDashBoardRepository>();
-            services.AddScoped<IEmailServices, EmailServices>();
+            services.AddScoped<IEmailService, EmailService>();
 
         }
 
-    
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, TrappistDbContext context)

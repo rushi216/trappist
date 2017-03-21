@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Promact.Trappist.DomainModel.ApplicationClasses.Account;
-using Promact.Trappist.Repository.Account;
 using Promact.Trappist.Utility.Constants;
 using Promact.Trappist.Utility.EmailServices;
 using Promact.Trappist.Web.Controllers;
@@ -13,17 +12,19 @@ namespace Promact.Trappist.Core.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly IAccountRepository _accountRepository;
         private readonly IStringConstants _stringConstant;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IEmailServices _emailServices;
-        public AccountController(IAccountRepository accountRepository, IStringConstants stringConstant,UserManager<ApplicationUser> userManager,IEmailServices emailServices)
+        private readonly IEmailService _emailServices;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+
+        public AccountController(IStringConstants stringConstant, UserManager<ApplicationUser> userManager,SignInManager<ApplicationUser> signInManager,IEmailService emailServices)
         {
-            _accountRepository = accountRepository;
             _stringConstant = stringConstant;
             _userManager = userManager;
             _emailServices = emailServices;
+            _signInManager = signInManager;
         }
+
         /// <summary>
         /// this method is used to see the view of login
         /// </summary>
@@ -35,6 +36,7 @@ namespace Promact.Trappist.Core.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
+
         /// <summary>
         ///  This method will be called with credentials to validate user
         /// </summary>
@@ -45,7 +47,8 @@ namespace Promact.Trappist.Core.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (await _accountRepository.SignIn(loginModel))
+                var result = await _signInManager.PasswordSignInAsync(loginModel.Email, loginModel.Password, isPersistent: true, lockoutOnFailure: true);
+                if (result.Succeeded)
                 {
                     return RedirectToLocal(returnUrl);
                 }
@@ -61,6 +64,7 @@ namespace Promact.Trappist.Core.Controllers
                 return View(loginModel);
             }
         }
+
         /// <summary>
         /// this method is used to redirect to any local url link
         /// </summary>
@@ -77,6 +81,7 @@ namespace Promact.Trappist.Core.Controllers
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
         }
+
         /// <summary>
         /// this method is used to see the view of forgot password
         /// </summary>
@@ -84,13 +89,14 @@ namespace Promact.Trappist.Core.Controllers
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ForgotPassword()
-        {         
+        {
             return View();
         }
+
         /// <summary>
-        /// this method will be called to validate the given email and send a link to the perticular email id to reset the password
+        /// this method will be called to validate the input email and send a link to the perticular email id to reset the password
         /// </summary>
-        /// <param name="forgotPasswordModel"></param>
+        /// <param name="forgotPasswordModel">object of forgotpassword model</param>
         /// <returns>redirect to forgot password conformation view</returns>
         [HttpPost]
         [AllowAnonymous]
@@ -112,6 +118,7 @@ namespace Promact.Trappist.Core.Controllers
             }
             return View(forgotPasswordModel);
         }
+
         /// <summary>
         /// this method is used to display confirmation message after sending email to reset password
         /// </summary>
@@ -120,6 +127,7 @@ namespace Promact.Trappist.Core.Controllers
         {
             return View();
         }
+
         /// <summary>
         /// this method is called when link is clicked through mail
         /// </summary>
@@ -131,24 +139,33 @@ namespace Promact.Trappist.Core.Controllers
         {
             return code == null ? View("Error") : View();
         }
+
         /// <summary>
         /// this method is used to take the new password and update with the existing password 
         /// </summary>
-        /// <param name="resetPasswordModel"></param>
+        /// <param name="resetPasswordModel">object of resetpassword model</param>
         /// <returns>redirect to reset password confirmation page</returns>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(ResetPassword resetPasswordModel)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                if (await _accountRepository.ResetPassowrd(resetPasswordModel))
+                var currentUser = await _userManager.FindByEmailAsync(resetPasswordModel.Email);
+                if (currentUser == null)
+                {
+                    ViewBag.Error = _stringConstant.InvalidEmailError;
+                    return View(resetPasswordModel);
+                }
+                var result = await _userManager.ResetPasswordAsync(currentUser, resetPasswordModel.Code, resetPasswordModel.ConfirmPassword);
+                if (result.Succeeded)
                 {
                     return RedirectToAction(nameof(AccountController.ResetPasswordConfirmation), "Account");
                 }
                 else
                 {
+                    ViewBag.Error = _stringConstant.InvalidEmailError;
                     return View(resetPasswordModel);
                 }
             }
@@ -158,10 +175,11 @@ namespace Promact.Trappist.Core.Controllers
                 return View(resetPasswordModel);
             }
         }
+
         /// <summary>
-        /// this method is used to return the reset password confirmation message page
+        /// this method is used to show the reset password confirmation message 
         /// </summary>
-        /// <returns></returns>
+        /// <returns>reset password confirmation view</returns>
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ResetPasswordConfirmation()

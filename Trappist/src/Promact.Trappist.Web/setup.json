@@ -1,0 +1,13 @@
+﻿{
+  "settings": {
+    "connectionstring": {
+      "name": ""
+    },
+    "emailsettings": {
+      "server": "webmail.promactinfo.com",
+      "port": "587",
+      "username": "",
+      "password": ""
+    }
+  }
+}

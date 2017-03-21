@@ -6,6 +6,7 @@
     "MimeKit": "1.10.1",
     "NETCore.MailKit": "1.0.1",
     "NETStandard.Library": "1.6.0",
+    "Promact.Trappist.DomainModel": "1.0.0-*",
     "System.Net.Sockets": "4.3.0"
   },
 
