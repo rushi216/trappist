@@ -19,11 +19,11 @@ using Promact.Trappist.DomainModel.Seed;
 using NLog.Extensions.Logging;
 using NLog.Web;
 using Promact.Trappist.Repository.Account;
-using Promact.Trappist.Repository.TestDashBoard;
 using AutoMapper;
 using Promact.Trappist.DomainModel.ApplicationClasses.Question;
 using Promact.Trappist.DomainModel.Models.Question;
 using Promact.Trappist.DomainModel.ApplicationClasses.SingleMultipleAnswerQuestionApplicationClass;
+
 
 namespace Promact.Trappist.Web
 {
@@ -38,9 +38,7 @@ namespace Promact.Trappist.Web
             if (env.IsDevelopment())
             {
                 // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
-                builder.AddUserSecrets();
-                // This will push telemetry data through Application Insights pipeline faster, allowing you to view results immediately.
-                builder.AddApplicationInsightsSettings(developerMode: true);
+                builder.AddUserSecrets<Startup>();
             }
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
@@ -49,8 +47,6 @@ namespace Promact.Trappist.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
-            services.AddApplicationInsightsTelemetry(Configuration);
             services.AddDbContext<TrappistDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), x => x.MigrationsAssembly("Promact.Trappist.Web")));
             services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -63,8 +59,10 @@ namespace Promact.Trappist.Web
             services.AddScoped<IStringConstants, StringConstants>();
             services.AddScoped<ITestSettingsRepository, TestSettingsRepository>();
             services.AddScoped<IAccountRepository, AccountRepository>();
-            services.AddScoped<ITestDashBoardRepository, TestDashBoardRepository>();
-        }
+          
+        
+    }
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, TrappistDbContext context)
         {
@@ -72,23 +70,31 @@ namespace Promact.Trappist.Web
             loggerFactory.AddDebug();
             loggerFactory.AddNLog();
             app.AddNLogWeb();
-            app.UseApplicationInsightsRequestTelemetry();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
             }
-            /*else
+
+            else
             {
                 app.UseExceptionHandler("/Home/Error");
-            }*/
-            app.UseApplicationInsightsExceptionTelemetry();
+            }
+
+
             app.UseStaticFiles();
-            app.UseStaticFiles(new StaticFileOptions
+
+
+            if (env.IsDevelopment())
             {
-                FileProvider = new PhysicalFileProvider(Path.GetFullPath(Path.Combine(env.ContentRootPath, "node_modules"))),
-                RequestPath = new PathString("/node_modules")
-            });
+                app.UseStaticFiles(new StaticFileOptions
+                {
+                    FileProvider = new PhysicalFileProvider(Path.GetFullPath(Path.Combine(env.ContentRootPath, "node_modules"))),
+                    RequestPath = new PathString("/node_modules")
+                });
+            }
+
             app.UseIdentity();
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
             app.UseMvc(routes =>
