@@ -1,10 +1,9 @@
-﻿import { CodingLanguage } from "./coding.language.enum";
+﻿import { CodingLanguage } from "./coding.language.model";
 
 export class ProgrammingQuestion {
     questionDetail: string;
     questionType: number;
     difficultyLevel: number;
-    createdBy: string;
     categoryId: number;
     checkCodeComplexity: boolean;
     checkTimeComplexity: boolean;

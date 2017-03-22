@@ -6,6 +6,8 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Promact.Trappist.DomainModel.Models.Question;
 using Promact.Trappist.DomainModel.ApplicationClasses.SingleMultipleAnswerQuestionApplicationClass;
+using Promact.Trappist.DomainModel.Enum;
+using System;
 
 namespace Promact.Trappist.Repository.Questions
 {
@@ -46,13 +48,13 @@ namespace Promact.Trappist.Repository.Questions
         /// Add new code snippet question to the database
         /// </summary>
         /// <param name="codeSnippetQuestion">Code Snippet Question Model</param>
-        public void AddCodeSnippetQuestion(CodeSnippetQuestionDto codeSnippetQuestionModel)
+        public async void AddCodeSnippetQuestion(CodeSnippetQuestionApplicationClass codeSnippetQuestionModel)
         {
-            CodeSnippetQuestion codeSnippetQuestion = Mapper.Map<CodeSnippetQuestionDto, CodeSnippetQuestion>(codeSnippetQuestionModel);
+            CodeSnippetQuestion codeSnippetQuestion = Mapper.Map<CodeSnippetQuestionApplicationClass, CodeSnippetQuestion>(codeSnippetQuestionModel);
             using (var transaction = _dbContext.Database.BeginTransaction())
             {
                 var question = _dbContext.CodeSnippetQuestion.Add(codeSnippetQuestion);
-                _dbContext.SaveChanges();
+                await _dbContext.SaveChangesAsync();
                 var codingLanguageList = codeSnippetQuestionModel.LanguageList;
                 var questionId = question.Entity.Id;
                 foreach (var language in codingLanguageList)
@@ -64,9 +66,28 @@ namespace Promact.Trappist.Repository.Questions
                         LanguageId = languageId
                     });
                 }
-                _dbContext.SaveChanges();
+                await _dbContext.SaveChangesAsync();
                 transaction.Commit();
             }
+        }
+
+        public ICollection<CodingLanguageApplicationClass> GetAllCodingLanguages()
+        {
+            var codingLanguageList = new List<CodingLanguageApplicationClass>();
+            var languageCodes = _dbContext.CodingLanguage.Select(x => x.Language).ToList();
+            ProgrammingLanguage programmingLanguage;
+
+            languageCodes.ForEach((language) =>
+            {
+                programmingLanguage = (ProgrammingLanguage)language;
+                codingLanguageList.Add(new CodingLanguageApplicationClass()
+                {
+                    LanguageName = programmingLanguage.ToString(),
+                    LanguageCode = (int)language
+                });
+            });
+
+            return codingLanguageList;
         }
     }
 }

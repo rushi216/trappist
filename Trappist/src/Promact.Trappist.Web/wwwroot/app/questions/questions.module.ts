@@ -1,5 +1,6 @@
 ﻿import { NgModule } from '@angular/core';
 import { SharedModule } from '../shared/shared.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { questionsRouting } from "./questions.routing";
 import { QuestionsComponent } from "./questions.component";
 import { QuestionsDashboardComponent } from "./questions-dashboard/questions-dashboard.component";
@@ -17,6 +18,8 @@ import { ProgrammingQuestion } from "./question.programming.model";
     imports: [
         SharedModule,
         questionsRouting,
+        FormsModule,
+        ReactiveFormsModule
     ],
     declarations: [
         QuestionsComponent,

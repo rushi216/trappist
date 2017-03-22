@@ -25,4 +25,8 @@ export class QuestionsService {
     postCodeSnippetQuestion(codeSnippetQuesion: ProgrammingQuestion) {
         return this.httpService.post(this.questionsApiUrl + "/codesnippetquestion", codeSnippetQuesion);
     }
+
+    getAllCodingLanguage() {
+        return this.httpService.get(this.questionsApiUrl + "/codinglanguge");
+    }
 }

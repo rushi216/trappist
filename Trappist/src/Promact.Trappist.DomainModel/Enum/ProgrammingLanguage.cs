@@ -1,6 +1,6 @@
 ﻿namespace Promact.Trappist.DomainModel.Enum
 {
-    public enum ProgramingLanguage
+    public enum ProgrammingLanguage
     {
         Java,
         Cpp,

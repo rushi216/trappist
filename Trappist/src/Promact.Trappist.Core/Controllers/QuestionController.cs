@@ -37,7 +37,7 @@ namespace Promact.Trappist.Core.Controllers
         /// Returns BadRequest if model passed is null or model state is invalid.
         /// </returns>
         [HttpPost("codesnippetquestion")]
-        public IActionResult AddCodeSnippetQuestion([FromBody]CodeSnippetQuestionDto codeSnippetQuestionDto)
+        public IActionResult AddCodeSnippetQuestion([FromBody]CodeSnippetQuestionApplicationClass codeSnippetQuestionDto)
         {
             if (codeSnippetQuestionDto == null)
             {
@@ -61,6 +61,13 @@ namespace Promact.Trappist.Core.Controllers
         {
             var questionsList = _questionsRepository.GetAllQuestions();
             return Ok(questionsList);
+        }
+
+        [HttpGet("codinglanguge")]
+        public IActionResult GetAllCodingLanguage()
+        {
+            var languageList = _questionsRepository.GetAllCodingLanguages();
+            return Ok(languageList);
         }
     }
 }

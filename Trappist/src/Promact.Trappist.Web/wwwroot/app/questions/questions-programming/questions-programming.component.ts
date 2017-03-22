@@ -1,9 +1,10 @@
 ﻿import { Component, OnInit, ViewChild } from "@angular/core";
-import { CodingLanguage } from "../coding.language.enum";
+import { FormGroup, Validators, FormBuilder, NgForm } from '@angular/forms';
+import { CodingLanguage } from "../coding.language.model";
 import { CategoryService } from "../categories.service";
 import { QuestionsService } from "../questions.service";
 import { ProgrammingQuestion } from "../question.programming.model";
-import { DifficultyLevel } from "../difficulty.level.enum";
+import { DifficultyLevel } from "../enum-difficultylevel";
 import { Category } from "../category.model";
 
 @Component({
@@ -14,13 +15,15 @@ import { Category } from "../category.model";
 
 export class QuestionsProgrammingComponent {
 
-    codingLanguages: string[] = ['Java', 'C++', 'C'];
-    selectedCodingLanguages: string[] = new Array<string>();
+    codeSnippetForm: FormGroup;
+
+    selectedCodingLanguages: CodingLanguage[] = new Array<CodingLanguage>();
     categories: Category[] = new Array<Category>();
+    codingLanguages: CodingLanguage[] = new Array<CodingLanguage>(); 
 
     languageInputText: string = "";
     selectedDifficultyLevel: string;
-    questionDetail: string;
+    //questionDetail: string;
     selectedCategory: Category;
     allContentReady: boolean = false;
     noLanguageSelected: boolean = false;
@@ -31,63 +34,80 @@ export class QuestionsProgrammingComponent {
     runCornerTestCase: boolean = false;
     runNecessaryTestCase: boolean = false;
 
-    constructor(private categoryService: CategoryService, private programmingQuestion: ProgrammingQuestion, private questionService: QuestionsService) {
-        this.codingLanguages.sort();
+    constructor(private categoryService: CategoryService,
+        private programmingQuestion: ProgrammingQuestion,
+        private questionService: QuestionsService,
+        private formBuilder: FormBuilder) {
+
+        this.codingLanguages.sort((a, b) => a.languageCode - b.languageCode);
         this.getCategories();
+        this.getCodingLanguages();
         this.selectedCategory = new Category();
-        this.selectedDifficultyLevel = "Easy";
+        //this.selectedDifficultyLevel = "Easy";
+
+        this.codeSnippetForm = formBuilder.group({
+            'categoriesOption': [null, Validators.required],
+            'difficultyLevel': ['Easy', Validators.required],
+            'questionDetail': ['', Validators.compose([Validators.required, Validators.maxLength(1000)])],
+            'languageInput': '',
+            'checkCodeComplexity': false,
+            'checkTimeComplexity': true,
+            'runBasicTestCase': true,
+            'runCornerTestCase': false,
+            'runNecessaryTestCase': false
+        })
     }
 
     getCategories() {
         this.categoryService.getAllCategories().subscribe((response) => {
             this.categories = response;
-            this.selectedCategory = this.categories[0];
             this.allContentReady = true;
         });
     }
 
-    selectLanguage(language: string) {
-        var index = this.codingLanguages.findIndex(x => x.toLowerCase() === language.toLowerCase());
-        if (index != -1) {
-            this.selectedCodingLanguages.push(this.codingLanguages[index]);
-            this.codingLanguages.splice(index, 1);
-            this.languageInputText = null;
-            this.validate();
-        }
+    getCodingLanguages() {
+        this.questionService.getAllCodingLanguage().subscribe((response) => {
+            this.codingLanguages = response;
+        });
     }
 
-    removeSelectedLanguage(selectedLanguage: string) {
+    selectLanguage(language: CodingLanguage) { 
+        this.selectedCodingLanguages.push(language);
+        this.codingLanguages.splice(this.codingLanguages.indexOf(language), 1);
+        this.languageInputText = null;
+        this.validate();
+        
+    }
+
+    removeSelectedLanguage(selectedLanguage: CodingLanguage) {
         this.codingLanguages.push(selectedLanguage);
         this.selectedCodingLanguages.splice(this.selectedCodingLanguages.indexOf(selectedLanguage), 1);
-        this.codingLanguages.sort();
+        this.codingLanguages.sort((a, b) => a.languageCode - b.languageCode);
     }
 
     selectCategory(category: string) {
         this.selectedCategory = this.categories.find((x) => x.categoryName === category);
     }
 
-    convertLanguageStringToEnum() {
-        var languageList: CodingLanguage[] = new Array<CodingLanguage>();
-        this.selectedCodingLanguages.forEach((x) => {
-            languageList.push(CodingLanguage[x]);
-        });
-        return languageList;
-    }
-
-    submitForm() {
+    submitForm(form: NgForm) {
+        //this.codeSnippetForm
         if (this.validate()) {
             //Map question
-            this.programmingQuestion.questionDetail = this.questionDetail;
-            this.programmingQuestion.questionType = 2; //Type = programming question 
-            this.programmingQuestion.difficultyLevel = DifficultyLevel[this.selectedDifficultyLevel];
-            this.programmingQuestion.createdBy = "USER"; //To-Do Add current user name
+            //this.programmingQuestion = this.codeSnippetForm.value;
+            this.programmingQuestion.languageList = this.selectedCodingLanguages;
             this.programmingQuestion.categoryId = this.selectedCategory.id;
-            this.programmingQuestion.checkCodeComplexity = this.checkCodeComplexity;
-            this.programmingQuestion.checkCodeComplexity = this.checkTimeComplexity;
-            this.programmingQuestion.runBasicTestCase = this.runBasicTestCase;
-            this.programmingQuestion.runCornerTestCase = this.runCornerTestCase;
-            this.programmingQuestion.runNecessaryTestCase = this.runNecessaryTestCase;
-            this.programmingQuestion.languageList = this.convertLanguageStringToEnum();
+            //this.programmingQuestion.difficultyLevel = this.difficulties.indexOf(this.codeSnippetForm.controls['difficultyLevel'].value);
+            this.programmingQuestion.difficultyLevel = DifficultyLevel[this.codeSnippetForm.controls['difficultyLevel'].value];
+            //this.programmingQuestion.questionDetail = this.questionDetail;
+            //this.programmingQuestion.questionType = 2; //Type = programming question 
+            //this.programmingQuestion.difficultyLevel = DifficultyLevel[this.selectedDifficultyLevel];
+            //this.programmingQuestion.categoryId = this.selectedCategory.id;
+            //this.programmingQuestion.checkCodeComplexity = this.checkCodeComplexity;
+            //this.programmingQuestion.checkCodeComplexity = this.checkTimeComplexity;
+            //this.programmingQuestion.runBasicTestCase = this.runBasicTestCase;
+            //this.programmingQuestion.runCornerTestCase = this.runCornerTestCase;
+            //this.programmingQuestion.runNecessaryTestCase = this.runNecessaryTestCase;
+            
 
             this.questionService.postCodeSnippetQuestion(this.programmingQuestion).subscribe((response) => {
                 if (response != null || typeof response != 'undefined') {

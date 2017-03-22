@@ -16,11 +16,12 @@ namespace Promact.Trappist.Repository.Questions
         /// Add new code snippet question to the database
         /// </summary>
         /// <param name="codeSnippetQuestionModel">Code Snippet Question Model</param>
-        void AddCodeSnippetQuestion(CodeSnippetQuestionDto codeSnippetQuestionModel);
+        void AddCodeSnippetQuestion(CodeSnippetQuestionApplicationClass codeSnippetQuestionModel);
         /// <summary>
         /// Get all questions
         /// </summary>
         /// <returns>Question list</returns>
         ICollection<SingleMultipleAnswerQuestionApplicationClass> GetAllQuestions();
+        ICollection<CodingLanguageApplicationClass> GetAllCodingLanguages();
     }
 }
