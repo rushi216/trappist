@@ -20,8 +20,7 @@ namespace Promact.Trappist.Core.Controllers
         /// </summary>
         /// <param name="singleMultipleQuestion"></param>
         /// <returns></returns>   
-        [Route("singlemultiplequestion")]
-        [HttpPost]
+        [HttpPost("singlemultiplequestion")]
         public IActionResult AddSingleMultipleAnswerQuestion([FromBody]SingleMultipleQuestion singleMultipleQuestion)
         {
             _questionsRepository.AddSingleMultipleAnswerQuestion(singleMultipleQuestion.singleMultipleAnswerQuestion, singleMultipleQuestion.singleMultipleAnswerQuestionOption);
@@ -39,11 +38,10 @@ namespace Promact.Trappist.Core.Controllers
             {
                 return BadRequest();
             }
-
             _questionsRepository.AddCodeSnippetQuestion(codeSnippetQuestionDto);
-
             return Ok(codeSnippetQuestionDto);
         }
+
         #region GetAllQuestions
         /// <summary>
         /// The undermentioned controller calls the GetAllQuestions method implemented in the QuestionRepository
