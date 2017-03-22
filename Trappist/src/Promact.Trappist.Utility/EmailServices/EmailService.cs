@@ -24,12 +24,12 @@ namespace Promact.Trappist.Utility.EmailServices
             {
                 MimeMessage emailMessage = new MimeMessage();
                 emailMessage.From.Add(new MailboxAddress(userName));
-                emailMessage.To.Add(new MailboxAddress(to));
+                emailMessage.To.Add(new MailboxAddress(to));                
                 using (var client = new SmtpClient())
                 {
                     client.Connect(server, port, SecureSocketOptions.None);
                     client.AuthenticateAsync(userName, password);
-                    client.Send(emailMessage);
+                    client.SendAsync(emailMessage);
                     client.Disconnect(true);
                 }
                 return true;
