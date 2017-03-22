@@ -3,7 +3,7 @@ set -e
 
 cd ./Trappist/src/Promact.Trappist.Web
 dotnet ef migrations add prod
-dotnet publish -o published
+dotnet publish -o published -v diag
 ls -la wwwroot
 ls published/wwwroot
 ls -la published/wwwroot
