@@ -26,6 +26,16 @@ namespace Promact.Trappist.Repository.Tests
             _dbContext.SaveChanges();
         }
         /// <summary>
+        /// Fetch all the tests from Test Model,Convert it into List
+        /// </summary>
+        /// <returns>List of Tests</returns>   
+        public List<Test> GetAllTests()
+        {
+            var tests = _dbContext.Test.ToList();
+            return tests;
+        }
+
+        /// <summary>
         ///  this method is used to generate a random string for every test at the time of test creation
         /// <param name="test">object of Test</param>
         /// <param name="length">length of the random string</param>
@@ -54,14 +64,5 @@ namespace Promact.Trappist.Repository.Tests
                 return response;
             }
             }               
-        }
-        /// <summary>
-        /// Fetch all the tests from Test Model,Convert it into List
-        /// </summary>
-        /// <returns>List of Tests</returns>
-        public List<Test> GetAllTests()
-        {
-            var tests = _dbContext.Test.ToList();
-            return tests;
-        }
+        }   
     }

@@ -16,20 +16,17 @@ namespace Promact.Trappist.Repository.Tests
         /// </summary>
         /// <param name="test">object of Test</param>
         /// <returns>boolean</returns>
-        Task<Response>UniqueTestName(string TestName);
+        Task<Response> UniqueTestName(string TestName);
         /// <summary>
         /// this method is used to generate a random string which is unique for every test
         /// </summary>
         /// <param name="test">object of Test</param>
         /// <param name="length">length of the random string</param>
         void RandomLinkString(Test test, int length);
+        /// <summary>
+        /// Method defined to fetch Tests from Test Model
+        /// </summary>
+        /// <returns>List Of Tests</returns>
+        List<Test> GetAllTests();
     }
-    /// <summary>
-    /// Method defined to fetch Tests from Test Model
-    /// </summary>
-    /// <returns>List Of Tests</returns>
-    List<Test> GetAllTests();
-
-    }
-
 }
