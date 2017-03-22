@@ -25,8 +25,13 @@ namespace Promact.Trappist.Repository.Questions
         /// <returns>Question list</returns>
         public async Task<ICollection<SingleMultipleAnswerQuestionAC>> GetAllQuestions()
         {
-            var questions =await _dbContext.SingleMultipleAnswerQuestion.ProjectTo<SingleMultipleAnswerQuestionAC>().ToListAsync();
-            questions.AddRange(await _dbContext.CodeSnippetQuestion.ProjectTo<SingleMultipleAnswerQuestionAC>().ToListAsync());
+            var questions = await _dbContext.Question.ProjectTo<SingleMultipleAnswerQuestionAC>().ToListAsync();
+
+            foreach (var question in questions)
+            {
+                var singleMultipleAnswerQuestionId =await _dbContext.SingleMultipleAnswerQuestion.Where(x => x.QuestionId == question.Id).Select(x => x.Id).FirstOrDefaultAsync();
+                question.SingleMultipleAnswerQuestionOption = await _dbContext.SingleMultipleAnswerQuestionOption.Where(x => x.SingleMultipleAnswerQuestionID == singleMultipleAnswerQuestionId).ToListAsync();
+            }
             var questionsOrderedByCreatedDateTime = questions.OrderBy(f => f.CreatedDateTime).ToList();
             return questionsOrderedByCreatedDateTime;
         }
