@@ -44,12 +44,12 @@ namespace Promact.Trappist.Core.Controllers
         /// </summary>
         /// <param name="test">object of the Test</param>
         /// <returns>string</returns>
-        [HttpPost("api/addTests")]
+        [HttpPost]
         public ActionResult CreateTest([FromBody] Test test)
         {                                                
                 _testRepository.RandomLinkString(test, 10);
                 _testRepository.CreateTest(test);
-                return Json(test);                                                         
+                return Ok(test);                                                         
         }
         /// <summary>
         /// Get All Tests

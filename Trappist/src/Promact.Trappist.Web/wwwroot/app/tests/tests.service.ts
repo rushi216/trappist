@@ -27,7 +27,7 @@ export class TestService {
         return this.httpService.post(url,test);
     }
 
-    getTest(testName:any) {
-        return this.httpService.get(this.testApiUrl+"?testName=" +testName);
+    getTest(testName:string) {
+        return this.httpService.get(this.testApiUrl+"/" +testName);
     }
 }

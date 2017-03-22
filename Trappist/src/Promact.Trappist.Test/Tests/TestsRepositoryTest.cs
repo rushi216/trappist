@@ -1,5 +1,4 @@
-﻿using System;
-using Promact.Trappist.DomainModel.DbContext;
+﻿using Promact.Trappist.DomainModel.DbContext;
 using Xunit;
 using Microsoft.Extensions.DependencyInjection;
 using Promact.Trappist.Repository.Tests;
@@ -64,22 +63,29 @@ namespace Promact.Trappist.Test.Tests
         {
             var test = CreateTest();
             _testRepository.CreateTest(test);
-            var name = "abc";
+            var newTest = CreateTest();
+            var name = "nameOfTest";
             Response response = new Response();
             _testRepository.UniqueTestName(name);
-            _testRepository.CreateTest(test);
+            _testRepository.CreateTest(newTest);
             Assert.True(_trappistDbContext.Test.Count() == 2);
         }
         [Fact]
-        public void IsNotUniqueNameTest()
+        public async void IsNotUniqueNameTest()
         {
             var test = CreateTest();
             _testRepository.CreateTest(test);
             Response response = new Response();
-            var name = "test name";
-            _testRepository.UniqueTestName(name);
-            _testRepository.CreateTest(test);
-            Assert.True(_trappistDbContext.Test.Count() == 1);
+            var name = "Test name";
+            response=await _testRepository.UniqueTestName(name);
+            if (response.ResponseValue)
+            {
+                var testObj = CreateTest();
+                _testRepository.CreateTest(testObj);
+                Assert.True(_trappistDbContext.Test.Count() == 2);
+            }
+            else
+                Assert.True(_trappistDbContext.Test.Count() == 1);            
         }
         [Fact]
         public void RandomLinkStringTest()

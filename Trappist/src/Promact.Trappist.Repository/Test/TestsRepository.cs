@@ -45,11 +45,8 @@ namespace Promact.Trappist.Repository.Tests
         {
             Response response = new Response();
             response.ResponseValue = false;
-            //var testnameCheck=_dbContext.Test.FirstOrDefault<x=> x.TestName == testName > ();  
-            var testNameCheck = (from s in _dbContext.Test
-                                 where s.TestName == testName
-                                 select s.TestName).FirstOrDefault();
-            if (testNameCheck != null) 
+            var testnameCheck = _dbContext.Test.FirstOrDefault(x => x.TestName == testName);            
+            if (testnameCheck != null) 
                 return response;                         
             else
             {

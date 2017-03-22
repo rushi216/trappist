@@ -6,14 +6,14 @@
     <div class="dialog-body">
         <div class="form-group">
             <label class="h4">Test Name</label>
-            <input type="text" id="name" name="name" class="form-control" placeholder="Ex. Software Developer Recruitment Test" [(ngModel)]="test_name" #name="ngModel" required pattern="^[a-zA-Z0-9_@ $_#_%_&_*_^{}[\]\|.?-]*$" maxlength="150" /> 
-            <span class="error-msg" [hidden]="name.valid ||(name.invalid && name.dirty) || name.untouched">Name is required</span>
-            <span class="error-msg" [hidden]="name.valid ||(name.pristine && name.touched) || name.untouched || name.pristine">Enter a valid test name</span>         
-            <span class="error-msg" *ngIf="errorMessage" alert>Already a test with this name exists</span>         
+            <input type="text" id="name" name="name" class="form-control" placeholder="Ex. Software Developer Recruitment Test" [(ngModel)]="test_name" #name="ngModel" required pattern="^[a-zA-Z0-9_@ $_#_%_&_*_^{}[\]\|.?-]*$" maxlength="150"  /> 
+            <span class="error-msg" [hidden]="name.valid  ||(name.invalid && name.dirty)||name.pristine">Name is required</span>
+            <span class="error-msg" [hidden]="name.valid ||(name.dirty && name.untouched) || name.untouched">Enter a valid test name</span>         
+            <span class="error-msg" *ngIf="errorMessage" alert>Already a test with this name exists</span>        
         </div>
     </div>
     <div class="dialog-actions">
         <button type="button" class="btn" md-dialog-close>Cancel</button>
-        <button type="submit" class="btn btn-primary" (click)="AddTest(test_name)">Create Test</button>
+        <button type="submit" class="btn btn-primary" (click)="AddTest(test_name)">Create Test</button>  
     </div>
 </div> 
