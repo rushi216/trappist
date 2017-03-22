@@ -12,6 +12,9 @@ var runSequence = require('run-sequence');
 
 //production publish task
 gulp.task('prod', function (done) {
+    console.log("cwd is:" + process.cwd());
+    console.log("dir is:" + __dirname);
+    
     runSequence('tstojs', 'bundle-shims', 'bundle-app', 'bundle-setup-app', 'sass', 'bundle-css', function () {
         done();
     });
