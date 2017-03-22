@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Promact.Trappist.DomainModel.ApplicationClasses.BasicSetup;
 using Promact.Trappist.Repository.BasicSetup;
-using System;
 using System.Threading.Tasks;
 
 namespace Promact.Trappist.Core.Controllers
 {
-    [Route("api/BasicSetup")]
+    [Route("api/setup")]
     public class BasicSetupController : Controller
     {
         #region Private Variables
@@ -24,13 +23,13 @@ namespace Promact.Trappist.Core.Controllers
 
         #region Public methods
         /// <summary>
-        /// This method validate connection string
+        /// This method used for validating connection string
         /// </summary>
         /// <param name="model"></param>
-        /// <returns>If valid than true else false</returns>
-        [Route("ConnectionString")]
+        /// <returns>If valid then return true else return false</returns>
+        [Route("connectionstring")]
         [HttpPost]
-        public IActionResult ValidateConnectionString([FromBody] BasicSetup model)
+        public IActionResult ValidateConnectionString([FromBody] BasicSetupModel model)
         {
             if (ModelState.IsValid)
             {
@@ -40,15 +39,13 @@ namespace Promact.Trappist.Core.Controllers
         }
 
         /// <summary>
-        /// This method will verify Email settings
+        /// This method used for verifying Email settings
         /// </summary>
         /// <param name="model"></param>
-        /// <returns>if valid email settings than return true
-        ///          else false
-        /// </returns>
-        [Route("MailSettings")]
+        /// <returns>if valid email settings then return true else false</returns>
+        [Route("mailsettings")]
         [HttpPost]
-        public  IActionResult ValidateEmailSettings([FromBody] BasicSetup model)
+        public IActionResult ValidateEmailSettings([FromBody] BasicSetupModel model)
         {
             if (ModelState.IsValid)
             {
@@ -65,13 +62,13 @@ namespace Promact.Trappist.Core.Controllers
         }
 
         /// <summary>
-        /// This method will create user if valid user credential
+        /// This method used for creating the user.
         /// </summary>
         /// <param name="model"></param>
-        /// <returns>if user created than return true else false</returns>
-        [Route("Validateuser")]
+        /// <returns>if a user created then return true else return false</returns>
+        [Route("validateuser")]
         [HttpPost]
-        public async Task<IActionResult> ValidateUser([FromBody] BasicSetup model)
+        public async Task<IActionResult> ValidateUser([FromBody] BasicSetupModel model)
         {
             if (ModelState.IsValid)
             {

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Promact.Trappist.Utility.Constants
+﻿namespace Promact.Trappist.Utility.Constants
 {
     public interface IStringConstants
     {
@@ -9,6 +7,18 @@ namespace Promact.Trappist.Utility.Constants
 
         /// property Success is called when test creation is successfuly done
         string Success { get; }
+
+        #region BasicSetup Constants
+        /// <summary>
+        /// property ConfigFolderName is called whenever required config folder name
+        /// </summary>
+        string ConfigFolderName { get; }
+
+        /// <summary>
+        /// property SetupConfigFilename is called whenever required SetupConfig file name
+        /// </summary>
+        string SetupConfigFileName { get; }
+        #endregion
 
         #region "Account Constants"
         /// <summary>

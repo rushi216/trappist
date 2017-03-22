@@ -8,21 +8,21 @@ export class SetupService {
     }
 
     /**
-    validate connection string
+    This method used for validating connection string
     **/
     validateConnectionString(url: string, model: any) {
         return this.httpService.post(url, model);
     }
 
     /**
-    validate email Settings
+    This method used for verifying email Settings
     **/
     validateEmailSettings(url: string, model: any) {
         return this.httpService.post(url, model);
     }
 
     /**
-     Create User
+    This method used for Creating user
     **/
     createUser(url: string, model: any) {
         return this.httpService.post(url, model)

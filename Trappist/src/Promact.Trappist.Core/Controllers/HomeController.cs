@@ -1,21 +1,22 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Mvc;
 using Promact.Trappist.Repository.BasicSetup;
 
 namespace Promact.Trappist.Web.Controllers
 {
     public class HomeController : Controller
     {
-        readonly ILogger<HomeController> _logger;
-        readonly IHostingEnvironment _env;
+        #region Private variables
+        #region Dependencies
         private readonly IBasicSetupRepository _basicSetup;
-        public HomeController(ILogger<HomeController> logger, IHostingEnvironment env,IBasicSetupRepository basicSetup)
+        #endregion
+        #endregion
+
+        #region Constructor
+        public HomeController(IBasicSetupRepository basicSetup)
         {
-            _logger = logger;
-            _env = env;
             _basicSetup = basicSetup;
         }
+        #endregion
 
         public IActionResult Index()
         {
@@ -36,13 +37,13 @@ namespace Promact.Trappist.Web.Controllers
 
         public IActionResult Setup(string returnUrl = null)
         {
-            if (!_basicSetup.FileExist())
+            if (_basicSetup.FileExist())
             {
-                return View();
+                return RedirectToAction("Login", "Account");
             }
             else
             {
-                return RedirectToAction("Login","Account");
+                return View();
             }
         }
 

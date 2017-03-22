@@ -1,9 +1,27 @@
-﻿using System;
-
-namespace Promact.Trappist.Utility.Constants
+﻿namespace Promact.Trappist.Utility.Constants
 {
     public class StringConstants : IStringConstants
-    {
+    {       
+        public string InvalidTestName
+        {
+            get
+            {
+                return "Invalid Test Name "; 
+            }
+        }
+       
+        public string Success
+        {
+            get
+            {
+                return "Test Created successfuly"; 
+            }
+        }
+
+        #region Setup Constants
+        /// <summary>
+        /// property ConfigFolderName is called whenever required config folder name
+        /// </summary>
         public string ConfigFolderName
         {
             get
@@ -12,14 +30,9 @@ namespace Promact.Trappist.Utility.Constants
             }
         }
 
-        public string InvalidTestName
-        {
-            get
-            {
-                return "Invalid Test Name "; 
-            }
-        }
-
+        /// <summary>
+        /// property SetupConfigFilename is called whenever required SetupConfig file name
+        /// </summary>
         public string SetupConfigFileName
         {
             get
@@ -27,14 +40,7 @@ namespace Promact.Trappist.Utility.Constants
                 return "SetupConfig.json";
             }
         }
-
-        public string Success
-        {
-            get
-            {
-                return "Test Created successfuly"; 
-            }
-        }
+        #endregion
 
         #region "Account Constants"
 

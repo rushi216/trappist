@@ -1,5 +1,5 @@
-﻿export class ConnectionStringParamters {
-    connectionString: string;
+﻿export class ConnectionString {
+    value: string;
 }
 
 export class ServiceResponse {
@@ -23,8 +23,8 @@ export class RegistrationFields {
     password: string;
     confirmPassword: string;
 }
-export class BasicSetup {    
-    connectionStringParameters: ConnectionStringParamters;
+export class BasicSetup {
+    connectionString: ConnectionString;
     registrationFields: RegistrationFields;
     emailSettings: EmailSettings;
 }

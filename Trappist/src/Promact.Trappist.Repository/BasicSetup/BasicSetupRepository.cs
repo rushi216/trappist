@@ -18,7 +18,6 @@ namespace Promact.Trappist.Repository.BasicSetup
         #region Private Variables
         #region Dependencies
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailService _emailService;
         private readonly IHostingEnvironment _environment;
         private readonly TrappistDbContext _trappistDbContext;
@@ -27,20 +26,23 @@ namespace Promact.Trappist.Repository.BasicSetup
         #endregion
 
         #region Constructor
-        public BasicSetupRepository(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailService emailService, IHostingEnvironment environment, TrappistDbContext trappistDbContext, IStringConstants stringConstants)
+        public BasicSetupRepository(UserManager<ApplicationUser> userManager, IEmailService emailService, IHostingEnvironment environment, TrappistDbContext trappistDbContext, IStringConstants stringConstants)
         {
             _userManager = userManager;
-            _signInManager = signInManager;
             _emailService = emailService;
             _environment = environment;
             _trappistDbContext = trappistDbContext;
             _stringConstants = stringConstants;
         }
-        #endregion        
+        #endregion
 
         #region IBasicSetupRepository methods
-        //Method for register user
-        public async Task<ServiceResponse> RegisterUser(DomainModel.ApplicationClasses.BasicSetup.BasicSetup model)
+        /// <summary>
+        /// This method used for creating the user.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>if a user created then return true else return false</returns>
+        public async Task<ServiceResponse> RegisterUser(BasicSetupModel model)
         {
             var response = new ServiceResponse();
             try
@@ -50,9 +52,8 @@ namespace Promact.Trappist.Repository.BasicSetup
                 user.UserName = model.RegistrationFields.Email;
                 user.Email = model.RegistrationFields.Email;
                 user.CreateDateTime = DateTime.Now;
-                var res = new ServiceResponse();
-                res = SaveSetupParameter(model);
-                if (res.Response == true)
+                response = SaveSetupParameter(model);
+                if (response.Response == true)
                 {
                     _trappistDbContext.Database.EnsureCreated();
                     var result = await _userManager.CreateAsync(user, model.RegistrationFields.Password);
@@ -76,15 +77,19 @@ namespace Promact.Trappist.Repository.BasicSetup
             }
         }
 
-        //Method for validate conncetion string
-        public ServiceResponse ValidateConnectionString(DomainModel.ApplicationClasses.BasicSetup.BasicSetup model)
+        /// <summary>
+        /// This method used for validating connection string
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>If valid then return true else return false</returns>
+        public ServiceResponse ValidateConnectionString(BasicSetupModel model)
         {
             var response = new ServiceResponse();
             try
             {
-                model.ConnectionStringParameters.ConnectionString = model.ConnectionStringParameters.ConnectionString.Replace("\\\\", "\\");
-                model.ConnectionStringParameters.ConnectionString = model.ConnectionStringParameters.ConnectionString.Replace("\"", "");
-                var builder = new SqlConnectionStringBuilder(model.ConnectionStringParameters.ConnectionString);
+                model.ConnectionString.Value = model.ConnectionString.Value.Replace("\\\\", "\\");
+                model.ConnectionString.Value = model.ConnectionString.Value.Replace("\"", "");
+                var builder = new SqlConnectionStringBuilder(model.ConnectionString.Value);
                 using (var conn = new SqlConnection(GetConnectionString(builder)))
                 {
                     try
@@ -107,7 +112,11 @@ namespace Promact.Trappist.Repository.BasicSetup
             }
         }
 
-        //Method for build connection string without database.(For validate connection string purpose)
+        /// <summary>
+        /// This method used for removing database parameter from the connection string.
+        /// </summary>
+        /// <param name="connectionString"></param>
+        /// <returns>It returns the connection string without database </returns>
         private string GetConnectionString(SqlConnectionStringBuilder connectionString)
         {
             if (connectionString.IntegratedSecurity)
@@ -120,24 +129,32 @@ namespace Promact.Trappist.Repository.BasicSetup
             }
         }
 
-        //Mehod for validate email settings and for sending mail
-        public bool ValidateEmailSetting(DomainModel.ApplicationClasses.BasicSetup.BasicSetup model)
+        /// <summary>
+        /// This method used for verifying Email settings
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>if valid email settings then return true else false</returns>
+        public bool ValidateEmailSetting(BasicSetupModel model)
         {
             return _emailService.SendMail(model.EmailSettings.UserName, model.EmailSettings.Password, model.EmailSettings.Server, model.EmailSettings.Port, "", "");
         }
 
-        //Method for save setup parameter in SetupConfig.json file
-        private ServiceResponse SaveSetupParameter(DomainModel.ApplicationClasses.BasicSetup.BasicSetup model)
+        /// <summary>
+        /// This method used for saving setup parameter in SetupConfig.json file
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>It return response object which have value true or false</returns>
+        private ServiceResponse SaveSetupParameter(BasicSetupModel model)
         {
             var response = new ServiceResponse();
-            model.ConnectionStringParameters.ConnectionString = model.ConnectionStringParameters.ConnectionString.Replace("\\\\", "\\");
-            model.ConnectionStringParameters.ConnectionString = model.ConnectionStringParameters.ConnectionString.Replace("\"", "");
+            model.ConnectionString.Value = model.ConnectionString.Value.Replace("\\\\", "\\");
+            model.ConnectionString.Value = model.ConnectionString.Value.Replace("\"", "");
             var tempModel = new SetupConfig();
-            tempModel.ConnectionStringParameters = model.ConnectionStringParameters;
+            tempModel.ConnectionString = model.ConnectionString;
             tempModel.EmailSettings = model.EmailSettings;
-            string path = Path.Combine(_environment.ContentRootPath.ToString(), _stringConstants.ConfigFolderName, _stringConstants.SetupConfigFileName);
             string jsonData = JsonConvert.SerializeObject(tempModel, Formatting.Indented);
-            if (!File.Exists(path))
+            string path = Path.Combine(_environment.ContentRootPath.ToString(), _stringConstants.ConfigFolderName, _stringConstants.SetupConfigFileName);
+            if (FileExist())
             {
                 File.Create(path).Dispose();
             }
@@ -146,17 +163,14 @@ namespace Promact.Trappist.Repository.BasicSetup
             return response;
         }
 
-        //Method for checking file exist or not
+        /// <summary>
+        /// This method used for checking SetupConfig.json file exist or not
+        /// </summary>
+        /// <returns>If file exist then return true or return false</returns>
         public bool FileExist()
         {
-            if (File.Exists(Path.Combine(_environment.ContentRootPath.ToString(), _stringConstants.ConfigFolderName, _stringConstants.SetupConfigFileName)))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            string path = Path.Combine(_environment.ContentRootPath.ToString(), _stringConstants.ConfigFolderName, _stringConstants.SetupConfigFileName);
+            return File.Exists(path);
         }
         #endregion
     }

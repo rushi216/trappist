@@ -31,7 +31,6 @@ namespace Promact.Trappist.DomainModel.DbContext
             _environment = environment;
             _stringConstants = stringConstants;
         }
-        public TrappistDbContext() { }
         #endregion
 
         #region Protected Methods
@@ -44,7 +43,10 @@ namespace Promact.Trappist.DomainModel.DbContext
             // Add your customizations after calling base.OnModelCreating(builder);
         }
 
-        //Method used for providing dynamic connection string from user at runtime
+        /// <summary>
+        /// This method used for providing dynamic connection string from user at runtime
+        /// </summary>
+        /// <param name="optionBuilder"></param>
         protected override void OnConfiguring(DbContextOptionsBuilder optionBuilder)
         {
             string path = Path.Combine(_environment.ContentRootPath.ToString(), _stringConstants.ConfigFolderName, _stringConstants.SetupConfigFileName);
@@ -52,7 +54,7 @@ namespace Promact.Trappist.DomainModel.DbContext
             {
                 var reader = File.ReadAllText(path);
                 var connectionString = JsonConvert.DeserializeObject<SetupConfig>(reader);
-                optionBuilder.UseSqlServer(connectionString.ConnectionStringParameters.ConnectionString);
+                optionBuilder.UseSqlServer(connectionString.ConnectionString.Value);
                 base.OnConfiguring(optionBuilder);
             }
         }

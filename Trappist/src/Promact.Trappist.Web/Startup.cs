@@ -16,7 +16,6 @@ using Promact.Trappist.Repository.Categories;
 using Promact.Trappist.Repository.Tests;
 using Promact.Trappist.Utility.Constants;
 using Promact.Trappist.Repository.TestSettings;
-using Promact.Trappist.DomainModel.Seed;
 using NLog.Extensions.Logging;
 using NLog.Web;
 using Promact.Trappist.Repository.Account;
@@ -60,13 +59,7 @@ namespace Promact.Trappist.Web
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IStringConstants, StringConstants>();
             services.AddDirectoryBrowser();
-            // services.AddMvc(config => { config.Filters.Add(typeof(GlobalExceptionFilter)); });
-            services.AddMvc()
-           .AddJsonOptions(o => o.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)
-           .AddJsonOptions(o => o.SerializerSettings.ContractResolver = new DefaultContractResolver());
-            services.AddScoped<IQuestionsRespository, QuestionsRepository>();
             services.AddMvc(/*config => { config.Filters.Add(typeof(GlobalExceptionFilter)); }*/);
-            services.AddScoped<IQuestionRespository, QuestionRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ITestsRepository, TestsRepository>();
             services.AddScoped<IStringConstants, StringConstants>();
@@ -135,8 +128,8 @@ namespace Promact.Trappist.Web
             {
                 context.Database.EnsureDeleted();
             }
-            context.Database.Migrate();
-            context.Seed();
+            //context.Database.Migrate();
+            //context.Seed();
             #region Auto Mapper Configuration
             Mapper.Initialize(cfg =>
             {

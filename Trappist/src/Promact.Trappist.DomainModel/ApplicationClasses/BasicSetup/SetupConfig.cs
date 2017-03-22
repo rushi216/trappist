@@ -3,6 +3,6 @@
     public class SetupConfig
     {
         public EmailSettings EmailSettings { get; set; }
-        public ConnectionStringParameters ConnectionStringParameters { get; set; }
+        public ConnectionString ConnectionString { get; set; }
     }
 }
