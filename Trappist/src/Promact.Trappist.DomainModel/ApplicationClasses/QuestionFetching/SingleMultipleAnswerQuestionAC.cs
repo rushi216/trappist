@@ -6,7 +6,7 @@ namespace Promact.Trappist.DomainModel.ApplicationClasses.SingleMultipleAnswerQu
     /// <summary>
     /// Application class for SingleMultipleAnswerQuestion
     /// </summary>
-    public class SingleMultipleAnswerQuestionApplicationClass : Models.Question.Question
+    public class SingleMultipleAnswerQuestionAC : Models.Question.Question
     {
         public ICollection<SingleMultipleAnswerQuestionOption> SingleMultipleAnswerQuestionOption { get; set; }
     }
