@@ -5,6 +5,8 @@ cd ./Trappist/src/Promact.Trappist.Web
 dotnet ef migrations add prod
 dotnet publish -o published
 ls published/wwwroot
+ls -la published/wwwroot
+echo $PWD
 cd ../../../
 docker build -t promact/trappist:$TRAVIS_BRANCH .
 docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
