@@ -3,8 +3,6 @@ dist: trusty
 os: linux
 mono: none
 dotnet: 1.0.1
-node_js:
-  - "6"
 services:
   - docker
 install:
@@ -12,6 +10,7 @@ install:
 script:
   - dotnet build ./Trappist/Trappist.sln
   - dotnet test Trappist/src/Promact.Trappist.Test/Promact.Trappist.Test.csproj
+  - echo $TRAVIS_NODE_VERSION
 deploy:
   - provider: script
     script: chmod +x $TRAVIS_BUILD_DIR/deploy.sh && sh $TRAVIS_BUILD_DIR/deploy.sh
