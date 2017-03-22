@@ -11,6 +11,7 @@ import { MdDialog } from '@angular/material';
 export class AddCategoryDialogComponent {
     private category: Category = new Category();
     isNameExist: boolean = false;
+    lengthOfCategoryName: boolean = false;
     constructor(private categoryService: CategoryService, private dialog: MdDialog) {
     }
     /*
@@ -19,9 +20,11 @@ export class AddCategoryDialogComponent {
     *After Sucessful Addition it will Close add-category-dialog
     */
     addCategory(category: Category) {
-        this.categoryService.addCategory(category).subscribe((response) => {
-        });
-        this.dialog.closeAll();
+        if (category.categoryName !== "" && category.categoryName!==null && category.categoryName!==undefined) {
+            this.categoryService.addCategory(category).subscribe((response) => {
+            });
+            this.dialog.closeAll();
+        }
     }
     /* method to check Whether same CategoryName Exists or not
     *<param name="categoryName">categoryname to check it Exists or not</param>
@@ -31,5 +34,11 @@ export class AddCategoryDialogComponent {
         this.categoryService.checkDuplicateCategoryName(categoryName).subscribe((result) => {
             this.isNameExist = result;
         });
+        if (categoryName.length > 150) {
+            this.lengthOfCategoryName = true;
+        }
+        else {
+            this.lengthOfCategoryName = false;
+        }
     }
 }

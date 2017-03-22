@@ -12,6 +12,7 @@ import { Category } from "../category.model";
 export class RenameCategoryDialogComponent {
     category: Category = new Category();
     isNameExist: boolean = false;
+    lengthOfCategoryName: boolean = false;
     constructor(private categoryService: CategoryService, private dialog: MdDialog) {
     }
 
@@ -21,9 +22,11 @@ export class RenameCategoryDialogComponent {
    *after sucessful adding rename-category-diaalog will be closed
    */
     updateCategory(category: Category) {
-        this.categoryService.updateCategory(category.id, category).subscribe((response) => {
-        });
-        this.dialog.closeAll();
+        if (category.categoryName !== "") {
+            this.categoryService.updateCategory(category.id, category).subscribe((response) => {
+            });
+            this.dialog.closeAll();
+        }
     }
 
     /* to check Whether same CategoryName Exists or not
@@ -34,5 +37,11 @@ export class RenameCategoryDialogComponent {
         this.categoryService.checkDuplicateCategoryName(categoryName).subscribe((result) => {
             this.isNameExist = result;
         });
+        if (categoryName.length > 150) {
+            this.lengthOfCategoryName = true;
+        }
+        else {
+            this.lengthOfCategoryName = false;
+        }
     }
 }

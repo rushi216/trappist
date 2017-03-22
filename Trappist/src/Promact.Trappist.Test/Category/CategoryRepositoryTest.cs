@@ -44,7 +44,6 @@ namespace Promact.Trappist.Test.Category
             await _categoryRepository.CategoryUpdateAsync(category.Id,categoryToUpdate);
             Assert.True(_trappistDbContext.Category.Count(x=>x.CategoryName == "Updated Category") == 1);
         }
-
         private DomainModel.Models.Category.Category CreateCategory()
         {
             var category = new DomainModel.Models.Category.Category
