@@ -58,11 +58,8 @@ namespace Promact.Trappist.Web
             services.AddScoped<ITestsRepository, TestsRepository>();
             services.AddScoped<IStringConstants, StringConstants>();
             services.AddScoped<ITestSettingsRepository, TestSettingsRepository>();
-            services.AddScoped<IAccountRepository, AccountRepository>();
-          
-        
-    }
-
+            services.AddScoped<IAccountRepository, AccountRepository>();       
+        }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, TrappistDbContext context)
         {
@@ -70,22 +67,16 @@ namespace Promact.Trappist.Web
             loggerFactory.AddDebug();
             loggerFactory.AddNLog();
             app.AddNLogWeb();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
             }
-
             else
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
-
             app.UseStaticFiles();
-
-
             if (env.IsDevelopment())
             {
                 app.UseStaticFiles(new StaticFileOptions
@@ -94,7 +85,6 @@ namespace Promact.Trappist.Web
                     RequestPath = new PathString("/node_modules")
                 });
             }
-
             app.UseIdentity();
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
             app.UseMvc(routes =>

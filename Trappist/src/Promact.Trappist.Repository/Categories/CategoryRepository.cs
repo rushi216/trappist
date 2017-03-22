@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Promact.Trappist.DomainModel.DbContext;
 using Promact.Trappist.DomainModel.Models.Category;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
