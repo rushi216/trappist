@@ -10,7 +10,7 @@ import { TestLaunchDialogComponent } from "./test-settings/test-launch-dialog.co
 import { TestService } from "./tests.service";
 import { FilterPipe } from "./tests-dashboard/test-dashboard.pipe";
 import { TestSettingService } from "./testsetting.service";
-import { ClipboardModule } from 'ngx-clipboard';
+import { ClipboardModule } from "ngx-clipboard";
 
 @NgModule({
     imports: [
@@ -35,7 +35,7 @@ import { ClipboardModule } from 'ngx-clipboard';
     ],
     providers: [
         TestService,
-        TestsDashboardComponent
+        TestsDashboardComponent,
         TestSettingService
     ]
 })

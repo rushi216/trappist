@@ -8,7 +8,6 @@ export class TestService {
     private testsApiUrl = "api/TestDashboard";
     private testApiUrl = "api/tests";
     test: Test = new Test();
-    private testApiUrl = "api/tests";
 
     constructor(private httpService: HttpService) {
     }

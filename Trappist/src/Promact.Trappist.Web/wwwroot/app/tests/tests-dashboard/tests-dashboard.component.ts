@@ -1,6 +1,5 @@
 ﻿import { Component, OnInit, ViewChild } from "@angular/core";
 import { MdDialog } from '@angular/material';
-import { TestCreateDialogComponent } from "./test-create-dialog.component";
 import { DeleteTestDialogComponent } from "./delete-test-dialog.component";
 import { TestService } from "../tests.service";
 import { Test } from "../tests.model";
@@ -9,8 +8,6 @@ import { Http } from "@angular/http";
 import { TestSettingsComponent } from "../../tests/test-settings/test-settings.component";
 import { TestSettingService } from "../testsetting.service";
 import { Response } from "../tests.model";
-import { Http } from "@angular/http";
-
 
 @Component({
     moduleId: module.id,
