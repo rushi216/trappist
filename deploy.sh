@@ -4,6 +4,7 @@ set -e
 cd ./Trappist/src/Promact.Trappist.Web
 dotnet ef migrations add prod
 dotnet publish -o published
+ls -la wwwroot
 ls published/wwwroot
 ls -la published/wwwroot
 sleep 10
