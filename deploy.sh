@@ -6,6 +6,9 @@ dotnet ef migrations add prod
 dotnet publish -o published
 ls published/wwwroot
 ls -la published/wwwroot
+sleep 10
+echo "again"
+ls -la published/wwwroot
 echo $PWD
 cd ../../../
 docker build -t promact/trappist:$TRAVIS_BRANCH .
