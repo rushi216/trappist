@@ -5,7 +5,9 @@ using Promact.Trappist.DomainModel.ApplicationClasses.Question;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Promact.Trappist.DomainModel.Models.Question;
-using Promact.Trappist.DomainModel.ApplicationClasses.SingleMultipleAnswerQuestionApplicationClass;
+using Promact.Trappist.DomainModel.ApplicationClasses.SingleMultipleAnswerQuestionAC;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Promact.Trappist.Repository.Questions
 {
@@ -16,17 +18,19 @@ namespace Promact.Trappist.Repository.Questions
         {
             _dbContext = dbContext;
         }
+        #region GetAllQuestions
         /// <summary>
-        /// Get all questions
+        ///The undermentioned method fetches all the questions from the database
         /// </summary>
         /// <returns>Question list</returns>
-        public ICollection<SingleMultipleAnswerQuestionApplicationClass> GetAllQuestions()
+        public async Task<ICollection<SingleMultipleAnswerQuestionAC>> GetAllQuestions()
         {
-            var questions = _dbContext.SingleMultipleAnswerQuestion.ProjectTo<SingleMultipleAnswerQuestionApplicationClass>().ToList();
-            questions.AddRange(_dbContext.CodeSnippetQuestion.ProjectTo<SingleMultipleAnswerQuestionApplicationClass>().ToList());
+            var questions =await _dbContext.SingleMultipleAnswerQuestion.ProjectTo<SingleMultipleAnswerQuestionAC>().ToListAsync();
+            questions.AddRange(await _dbContext.CodeSnippetQuestion.ProjectTo<SingleMultipleAnswerQuestionAC>().ToListAsync());
             var questionsOrderedByCreatedDateTime = questions.OrderBy(f => f.CreatedDateTime).ToList();
             return questionsOrderedByCreatedDateTime;
         }
+        #endregion
         /// <summary>
         /// Add single multiple answer question into model
         /// </summary>

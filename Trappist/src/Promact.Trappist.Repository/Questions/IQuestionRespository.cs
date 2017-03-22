@@ -1,7 +1,9 @@
 ﻿using Promact.Trappist.DomainModel.ApplicationClasses.Question;
-using Promact.Trappist.DomainModel.ApplicationClasses.SingleMultipleAnswerQuestionApplicationClass;
+using Promact.Trappist.DomainModel.ApplicationClasses.SingleMultipleAnswerQuestionAC;
 using Promact.Trappist.DomainModel.Models.Question;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+
 namespace Promact.Trappist.Repository.Questions
 {
     public interface IQuestionRespository
@@ -21,6 +23,6 @@ namespace Promact.Trappist.Repository.Questions
         /// Get all questions
         /// </summary>
         /// <returns>Question list</returns>
-        ICollection<SingleMultipleAnswerQuestionApplicationClass> GetAllQuestions();
+        Task<ICollection<SingleMultipleAnswerQuestionAC>> GetAllQuestions();
     }
 }
